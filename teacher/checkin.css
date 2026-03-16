@@ -1,0 +1,151 @@
+/* ===== ROOT VARIABLES - FOREST GREEN THEME ===== */
+:root {
+    --primary-green: #157347;
+    --primary-green-dark: #146c43;
+    --bg-sidebar: #f1f5f9;
+}
+
+/* ===== LAYOUT & GENERAL ===== */
+.main-content {
+    margin-left: 240px;
+    padding: 90px 40px;
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+.text-custom {
+    color: var(--primary-green) !important;
+}
+
+.fw-600 { font-weight: 600; }
+.uppercase-tracking {
+    letter-spacing: 0.5px;
+    font-size: 0.75rem;
+}
+
+/* ===== STATS WRAPPER ===== */
+.stats-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.stat-item {
+    text-align: left;
+    padding: 0 15px;
+}
+
+.stat-divider {
+    border-left: 3px solid var(--primary-green);
+    padding-left: 15px;
+}
+
+.stat-label-simple {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.stat-value-simple {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1;
+}
+
+.text-present {
+    color: var(--primary-green);
+}
+
+/* ===== QR SECTION ===== */
+.qr-container {
+    background: #fdfdfd;
+    border-radius: 20px;
+    border: 2px dashed #cbd5e1;
+    min-height: 320px;
+    width: 100%;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+}
+
+#qrcode {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(21, 115, 71, 0.15);
+    max-width: 100%;
+}
+
+.icon-placeholder {
+    font-size: 3.5rem;
+    opacity: 0.5;
+}
+
+/* ===== TABLE & COMPONENTS ===== */
+.avatar-circle {
+    width: 34px;
+    height: 34px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--primary-green);
+}
+
+.status-pill {
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: inline-block;
+}
+
+.status-ok {
+    background: #dcfce7;
+    color: #157347;
+}
+
+.status-late {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* ===== BUTTONS ===== */
+.btn-primary-custom {
+    background-color: var(--primary-green);
+    border: none;
+    color: white;
+    font-weight: 700;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+
+.btn-primary-custom:hover {
+    background-color: var(--primary-green-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(21, 115, 71, 0.3);
+    color: white;
+}
+
+.btn-outline-danger {
+    border-radius: 10px;
+    font-weight: 600;
+    border: 2px solid #fee2e2;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+
+.form-control {
+    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.form-control:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 4px rgba(21, 115, 71, 0.1);
+}
