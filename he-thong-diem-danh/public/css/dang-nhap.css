@@ -1,0 +1,142 @@
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Background */
+.bg-login {
+    height: 100vh;
+    background: radial-gradient(circle at top, #7b0f2a, #2b0008);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Glow */
+.bg-login::before {
+    content: "";
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: #a81c3a;
+    filter: blur(200px);
+    top: -100px;
+    left: -100px;
+    opacity: 0.4;
+}
+
+.bg-login::after {
+    content: "";
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: #1c8a5d;
+    filter: blur(200px);
+    bottom: -100px;
+    right: -100px;
+    opacity: 0.3;
+}
+
+/* Logo */
+.logo {
+    width: 60px;
+    height: 60px;
+    margin: auto;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #a81c3a, #1c8a5d);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+}
+
+/* Title */
+.title {
+    color: white;
+    font-weight: 600;
+}
+
+.subtitle {
+    color: #ddd;
+    margin-bottom: 20px;
+}
+
+/* Card */
+.login-card {
+    width: 350px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px);
+    border: none;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    transition: 0.3s;
+}
+
+.login-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Input */
+.custom-input .form-control {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: white !important;
+}
+
+.custom-input .form-control::placeholder {
+    color: #ddd !important;
+}
+
+.custom-input .form-control:focus {
+    background: rgba(255,255,255,0.2);
+    box-shadow: 0 0 0 2px #a81c3a;
+}
+
+.custom-input .input-group-text {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #ccc;
+}
+
+/* Label */
+label {
+    color: #eee;
+    font-size: 13px;
+}
+
+/* Button */
+.btn-login {
+    border-radius: 30px;
+    background: linear-gradient(135deg, #a81c3a, #d6336c);
+    border: none;
+    color: white;
+    transition: 0.3s;
+}
+
+.btn-login:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(168,28,58,0.5);
+}
+
+/* Link */
+.link-custom {
+    color: #bbb;
+    text-decoration: none;
+}
+
+.link-custom:hover {
+    color: white;
+}
+
+/* Modal */
+.modal-custom {
+    background: rgba(30, 0, 10, 0.95);
+    color: white;
+    border-radius: 15px;
+}
+
+/* Footer */
+.footer {
+    color: #aaa;
+    font-size: 12px;
+}
