@@ -1,0 +1,27 @@
+.sidebar {
+    width: 240px;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    height: 100vh;
+}
+
+.nav-link {
+    color: #ccc;
+    transition: 0.3s;
+}
+
+.nav-link:hover {
+    color: white;
+    transform: translateX(5px);
+}
+
+.card-custom {
+    background: rgba(255,255,255,0.05);
+    border: none;
+    border-radius: 15px;
+    transition: 0.3s;
+}
+
+.card-custom:hover {
+    transform: translateY(-5px);
+}
