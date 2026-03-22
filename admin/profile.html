@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h3>Admin</h3>
+        <a href="index.html">Dashboard</a>
+        <a href="students.html">Sinh viên</a>
+        <a href="lecturers.html">Giảng viên</a>
+        <a href="academic.html">Học thuật</a>
+        <a href="sessions.html">QR</a>
+        <a href="attendance.html">Điểm danh</a>
+        <a href="profile.html" class="active">Tài khoản</a>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <h2>Thông tin tài khoản</h2>
+
+        <!-- PROFILE CARD -->
+        <div class="card profile-card">
+
+            <label class="tttk">Họ tên</label>
+            <input id="name" value="Admin" type="text" />
+
+            <label class="tttk">Email</label>
+            <input id="email" value="admin@gmail.com" type="email" />
+
+            <button class="btn btn-success" onclick="updateProfile()">Lưu thay đổi</button>
+
+            <div style="text-align:right;margin-top:10px">
+                <a href="#" class="forgot-link" onclick="openPasswordModal();return false;">
+                    Quên mật khẩu?
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MODAL ĐỔI MẬT KHẨU -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-box">
+            <h2>Đổi mật khẩu</h2>
+
+            <input id="oldPass" type="password" placeholder="Mật khẩu cũ" />
+            <input id="newPass" type="password" placeholder="Mật khẩu mới" />
+            <input id="confirmPass" type="password" placeholder="Xác nhận mật khẩu" />
+
+            <div class="modal-actions">
+                <button class="btn btn-success" onclick="changePassword()">Lưu</button>
+                <button class="btn btn-danger" onclick="closePasswordModal()">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/profile.js"></script>
+
+</body>
+
+</html>

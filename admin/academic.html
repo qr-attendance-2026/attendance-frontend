@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h3>Admin</h3>
+        <a href="index.html">Dashboard</a>
+        <a href="students.html">Sinh viên</a>
+        <a href="lecturers.html">Giảng viên</a>
+        <a href="academic.html" class="active">Học thuật</a>
+        <a href="sessions.html">QR</a>
+        <a href="attendance.html">Điểm danh</a>
+        <a href="profile.html">Tài khoản</a>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <h2>Quản lý Học thuật</h2>
+
+        <!-- SEARCH -->
+        <input id="searchAcademic" placeholder="Tìm kiếm..."
+            style="padding:10px;width:100%;margin-bottom:10px">
+
+        <!-- TABLE -->
+        <table class="table" id="academicTable">
+            <thead>
+                <tr>
+                    <th>Khoa</th>
+                    <th>Ngành</th>
+                    <th>Lớp</th>
+                    <th>Môn</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <button class="btn btn-success" id="btnAddAcademic">
+            Thêm dữ liệu
+        </button>
+    </div>
+
+    <!-- MODAL -->
+    <div id="modalAcademic">
+        <div class="modal-box">
+            <h3 id="modalTitleAcademic">Thêm dữ liệu</h3>
+
+            <input id="faculty" placeholder="Khoa">
+            <input id="major" placeholder="Ngành">
+            <input id="classAcademic" placeholder="Lớp">
+            <input id="subject" placeholder="Môn">
+
+            <div style="display:flex;justify-content:space-between;">
+                <button class="btn btn-success" onclick="saveAcademic()">Lưu</button>
+                <button class="btn btn-danger" onclick="closeAcademic()">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="assets/js/academic.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h3>Admin</h3>
+        <a href="index.html"class="active">Dashboard</a>
+        <a href="students.html">Sinh viên</a>
+        <a href="lecturers.html" >Giảng viên</a>
+        <a href="academic.html">Học thuật</a>
+        <a href="sessions.html">QR</a>
+        <a href="attendance.html">Điểm danh</a>
+        <a href="profile.html">Tài khoản</a>
+    </div>
+    <div class="main">
+        <h2>Dashboard</h2>
+
+        <div class="dashboard">
+            <div class="card">
+                <h4>Sinh viên</h4>
+                <h2>1200</h2>
+            </div>
+
+            <div class="card">
+                <h4>Lớp học</h4>
+                <h2>30</h2>
+            </div>
+
+            <div class="card">
+                <h4>Tỷ lệ</h4>
+                <h2>92%</h2>
+            </div>
+        </div>
+
+        <div class="card chart-card">
+            <canvas id="chart"></canvas>
+        </div>
+    </div>
+    <script src="assets/js/layout.js"></script>
+    <script>
+        loadLayout();
+    </script>
+    <script>
+        new Chart(document.getElementById('chart'), {
+            type: 'line',
+            data: {
+                labels: ['T2', 'T3', 'T4', 'T5', 'T6'], datasets: [{
+                    label: 'Attendance',
+                    data: [10, 20, 15, 30, 25],
+                    borderColor: '#22c55e',
+                    tension: 0.4
+                }]
+            }
+        });
+    </script>
+</body>
+
+</html>

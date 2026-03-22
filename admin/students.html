@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h3>Admin</h3>
+        <a href="index.html">Dashboard</a>
+        <a href="students.html" class="active">Sinh viên</a>
+        <a href="lecturers.html">Giảng viên</a>
+        <a href="academic.html">Học thuật</a>
+        <a href="sessions.html">QR</a>
+        <a href="attendance.html">Điểm danh</a>
+        <a href="profile.html">Tài khoản</a>
+    </div>
+    <div class="main">
+        <h2>Quản lý Sinh viên</h2>
+
+        <!-- SEARCH -->
+        <input id="search" placeholder="Tìm kiếm..." style="padding:10px;width:100%;margin-bottom:10px">
+
+        <!-- TABLE -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Mã SV</th>
+                    <th>Tên</th>
+                    <th>Lớp</th>
+                    <th>Email</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody id="studentTable">
+                <tr>
+                    <td>SV01</td>
+                    <td>Nguyễn Văn A</td>
+                    <td>D22_TH01</td>
+                    <td>a@gmail.com</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary">Sửa</button>
+                            <button class="btn btn-danger">Xóa</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="btn btn-success" id="btnAdd">Thêm sinh viên</button>
+    </div>
+
+    <!-- ===== MODAL FORM ===== -->
+    <div id="modal" class="modal">
+        <div class="modal-box">
+            <h3 id="modalTitle">Thêm sinh viên</h3>
+
+            <input id="mssv" placeholder="MSSV">
+            <input id="name" placeholder="Tên">
+            <input id="class" placeholder="Lớp">
+
+            <div style="display:flex;justify-content:space-between;">
+                <button class="btn btn-success" onclick="saveStudent()">Lưu</button>
+                <button class="btn btn-danger" onclick="closeModal()">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LINK JS -->
+    <script src="assets/js/students.js"></script>
+
+</body>
+
+</html>
