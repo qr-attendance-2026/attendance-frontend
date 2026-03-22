@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h3>Admin</h3>
+        <a href="index.html">Dashboard</a>
+        <a href="students.html">Sinh viên</a>
+        <a href="lecturers.html" class="active">Giảng viên</a>
+        <a href="academic.html">Học thuật</a>
+        <a href="sessions.html">QR</a>
+        <a href="attendance.html">Điểm danh</a>
+        <a href="profile.html">Tài khoản</a>
+    </div>
+
+    <div class="main">
+        <h2>Quản lý Giảng viên</h2>
+
+        <!-- SEARCH -->
+        <input id="search" placeholder="Tìm kiếm..." style="padding:10px;width:100%;margin-bottom:10px">
+
+        <!-- TABLE -->
+        <table class="table" id="lecturerTable">
+            <thead>
+                <tr>
+                    <th>Mã GV</th>
+                    <th>Tên</th>
+                    <th>Môn dạy</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>GV01</td>
+                    <td>Trần Văn B</td>
+                    <td>Lập trình Web</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary">Sửa</button>
+                            <button class="btn btn-danger">Xóa</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="btn btn-success" id="btnAdd">Thêm giảng viên</button>
+    </div>
+
+    <!-- ===== MODAL FORM ===== -->
+    <div id="modal" class="modal">
+        <div class="modal-box">
+            <h3 id="modalTitle">Thêm giảng viên</h3>
+
+            <input id="magv" placeholder="Mã giảng viên">
+            <input id="name" placeholder="Tên giảng viên">
+            <input id="subject" placeholder="Môn dạy">
+
+            <div class="modal-actions">
+                <button class="btn btn-success" onclick="saveLecturer()">Lưu</button>
+                <button class="btn btn-danger" onclick="closeModal()">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LINK JS -->
+    <script src="assets/js/lecturers.js"></script>
+
+</body>
+
+</html>
