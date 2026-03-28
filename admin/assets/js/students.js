@@ -1,34 +1,34 @@
 // DATA
 let students = [
-    { id: "SV01", name: "Nguyễn Văn A", class: "CNTT1" }
+    { id: "SV01", name: "Nguyễn Văn A", class: "CNTT1", email: "a@gmail.com" }
 ];
 
 let editIndex = null;
 
 // HIỂN THỊ
-function renderStudents() {
-  const table = document.getElementById("studentTable");
-  table.innerHTML = "";
+function renderStudents(data = students) {
+    const table = document.getElementById("studentTable");
+    table.innerHTML = "";
 
-  students.forEach((s, index) => {
-    table.innerHTML += `
-      <tr>
-        <td>${s.id}</td>
-        <td>${s.name}</td>
-        <td>${s.class}</td>
-        <td>${s.email}</td>
-        <td>
-          <div class="action-buttons">
-            <button class="btn btn-primary" onclick="editStudent(${index})">Sửa</button>
-            <button class="btn btn-danger" onclick="deleteStudent(${index})">Xóa</button>
-          </div>
-        </td>
-      </tr>
-    `;
-  });
+    data.forEach((s, index) => {
+        table.innerHTML += `
+        <tr>
+            <td>${s.id}</td>
+            <td>${s.name}</td>
+            <td>${s.class}</td>
+            <td>${s.email || "-"}</td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="openEdit(${index})">Sửa</button>
+                    <button class="btn btn-danger" onclick="deleteStudent(${index})">Xóa</button>
+                </div>
+            </td>
+        </tr>
+        `;
+    });
 }
 
-// MỞ MODAL THÊM
+// THÊM
 function addStudent() {
     editIndex = null;
     document.getElementById("modalTitle").innerText = "Thêm sinh viên";
@@ -40,7 +40,7 @@ function addStudent() {
     document.getElementById("modal").style.display = "flex";
 }
 
-// MỞ MODAL SỬA
+// SỬA
 function openEdit(index) {
     editIndex = index;
     const sv = students[index];
@@ -66,16 +66,16 @@ function saveStudent() {
     }
 
     if (editIndex === null) {
-        students.push({ id, name, class: className });
+        students.push({ id, name, class: className, email: "-" });
     } else {
-        students[editIndex] = { id, name, class: className };
+        students[editIndex] = { id, name, class: className, email: "-" };
     }
 
     closeModal();
-    renderTable();
+    renderStudents();
 }
 
-// ĐÓNG MODAL
+// ĐÓNG
 function closeModal() {
     document.getElementById("modal").style.display = "none";
 }
@@ -84,17 +84,16 @@ function closeModal() {
 function deleteStudent(index) {
     if (confirm("Bạn có chắc muốn xóa?")) {
         students.splice(index, 1);
-        renderTable();
+        renderStudents();
     }
 }
 
-// SEARCH + LOAD
+// LOAD + SEARCH
 document.addEventListener("DOMContentLoaded", () => {
-    renderTable();
+    renderStudents();
 
     document.getElementById("search").addEventListener("input", function () {
         const keyword = this.value.toLowerCase();
-        const tbody = document.querySelector("#studentTable tbody");
 
         const filtered = students.filter(sv =>
             sv.id.toLowerCase().includes(keyword) ||
@@ -102,22 +101,18 @@ document.addEventListener("DOMContentLoaded", () => {
             sv.class.toLowerCase().includes(keyword)
         );
 
-        // nếu không có dữ liệu
         if (filtered.length === 0) {
-            tbody.innerHTML = `
+            document.getElementById("studentTable").innerHTML = `
                 <tr>
-                    <td colspan="4" style="text-align:center;color:#f87171;">
+                    <td colspan="5" style="text-align:center;color:#f87171;">
                         Sinh viên không tồn tại
                     </td>
                 </tr>
             `;
         } else {
-            renderTable(filtered);
+            renderStudents(filtered);
         }
     });
 
     document.getElementById("btnAdd").addEventListener("click", addStudent);
 });
-function goBack() {
-    window.location.href = "../index.html";
-}
