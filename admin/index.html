@@ -2,12 +2,12 @@
 <html>
 
 <head>
-    <title>Trang chủ Admin</title>
+    <title>Dashboard</title>
 
-    <!-- BOOTSTRAP (đặt TRƯỚC) -->
+    <!-- BOOTSTRAP -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- CSS CỦA BẠN -->
+    <!-- CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
 
     <!-- CHART -->
@@ -16,65 +16,61 @@
 
 <body>
 
-    <!-- SIDEBAR (GIỮ NGUYÊN) -->
+    <!-- SIDEBAR -->
     <div class="sidebar">
         <h3>Admin</h3>
-        <a href="index.html" class="active">Dashboard</a>
-        <a href="students.html">Sinh viên</a>
-        <a href="lecturers.html">Giảng viên</a>
-        <a href="academic.html">Học thuật</a>
+        <a href="../admin/index.html" class="active">Dashboard</a>
+        <a href="../admin/students.html">Sinh viên</a>
+        <a href="../admin/lecturers.html">Giảng viên</a>
+        <a href="../admin/academic.html">Học thuật</a>
+
+        <a href="../login/login.html" id="logoutBtn" class="logout-btn">🚪 Đăng xuất</a>
     </div>
 
     <!-- MAIN -->
     <div class="main">
 
-        <h2>Dashboard</h2>
+        <!-- HEADER -->
+        <div class="header">
+            <h2>Dashboard</h2>
+            <div>Xin chào, Admin 👋</div>
+        </div>
 
-        <!-- MIX BOOTSTRAP + CSS CŨ -->
+        <!-- CARD -->
         <div class="dashboard">
-            <div class="card">
-                <h4>Sinh viên</h4>
-                <h2>1200</h2>
+            <div class="card gradient-card">
+                <h4>👨‍🎓 Sinh viên</h4>
+                <h2 id="totalStudents">0</h2>
             </div>
 
-            <div class="card">
-                <h4>Lớp học</h4>
-                <h2>30</h2>
+            <div class="card gradient-card">
+                <h4>🏫 Lớp</h4>
+                <h2 id="totalClasses">0</h2>
             </div>
 
-            <div class="card">
-                <h4>Tỷ lệ</h4>
-                <h2>92%</h2>
+            <div class="card gradient-card">
+                <h4>📈 Tỷ lệ</h4>
+                <h2 id="attendanceRate">0%</h2>
             </div>
         </div>
 
         <!-- CHART -->
-        <div class="card chart-card mt-3">
+        <div class="card mt-3">
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+                <h5>📊 Thống kê điểm danh</h5>
+                <span style="color:#94a3b8">Tuần này</span>
+            </div>
+
             <canvas id="chart"></canvas>
         </div>
 
     </div>
 
-    <!-- JS GIỮ NGUYÊN -->
-    <script src="assets/js/layout.js"></script>
-    <script>
-        loadLayout();
-    </script>
+    <!-- TOAST -->
+    <div id="toast" class="toast"></div>
 
-    <script>
-        new Chart(document.getElementById('chart'), {
-            type: 'line',
-            data: {
-                labels: ['T2', 'T3', 'T4', 'T5', 'T6'],
-                datasets: [{
-                    label: 'Attendance',
-                    data: [10, 20, 15, 30, 25],
-                    borderColor: '#22c55e',
-                    tension: 0.4
-                }]
-            }
-        });
-    </script>
+    <!-- SCRIPT -->
+    <script src="assets/js/chart.js"></script>
 
 </body>
 

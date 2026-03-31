@@ -1,72 +1,88 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>Quản lý Học Thuật</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Học thuật</title>
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <h3>Admin</h3>
-        <a href="index.html">Dashboard</a>
-        <a href="students.html">Sinh viên</a>
-        <a href="lecturers.html">Giảng viên</a>
-        <a href="academic.html" class="active">Học thuật</a>
-    </div>
+<div class="sidebar">
+    <h3>Admin</h3>
+    <a href="../admin/index.html">Dashboard</a>
+    <a href="../admin/students.html">Sinh viên</a>
+    <a href="../admin/lecturers.html">Giảng viên</a>
+    <a href="../admin/academic.html" class="active">Học thuật</a>
 
-    <!-- MAIN -->
-    <div class="main">
+    <a href="../login/login.html" id="logoutBtn" class="logout-btn">🚪 Đăng xuất</a>
+</div>
 
+<div class="main">
+
+    <div class="header">
         <h2>Quản lý Học thuật</h2>
-
-        <!-- SEARCH -->
-        <input id="searchAcademic" placeholder="Tìm kiếm..."
-            style="padding:10px;width:100%;margin-bottom:10px">
-
-        <!-- TABLE -->
-        <table class="table" id="academicTable">
-            <thead>
-                <tr>
-                    <th>Khoa</th>
-                    <th>Ngành</th>
-                    <th>Lớp</th>
-                    <th>Môn</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-
-        <button class="btn btn-success" id="btnAddAcademic">
-            Thêm dữ liệu
-        </button>
+        <div>Xin chào, Admin 👋</div>
     </div>
 
-    <!-- MODAL -->
-    <div id="modalAcademic">
-        <div class="modal-box">
-            <h3 id="modalTitleAcademic">Thêm dữ liệu</h3>
+    <div class="top-actions">
+        <button class="btn btn-success" id="btnAddAcademic">+ Thêm</button>
+        <button class="btn btn-import" id="btnImport">📥 Import Excel</button>
+    </div>
 
-            <input id="faculty" placeholder="Khoa">
-            <input id="major" placeholder="Ngành">
-            <input id="classAcademic" placeholder="Lớp">
-            <input id="subject" placeholder="Môn">
+    <input id="searchAcademic" class="form-control mb-3" placeholder="🔍 Tìm kiếm...">
 
-            <div style="display:flex;justify-content:space-between;">
-                <button class="btn btn-success" onclick="saveAcademic()">Lưu</button>
-                <button class="btn btn-danger" onclick="closeAcademic()">Hủy</button>
-            </div>
+    <table class="table" id="academicTable">
+        <thead>
+            <tr>
+                <th>Khoa</th>
+                <th>Ngành</th>
+                <th>Lớp</th>
+                <th>Môn</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+</div>
+
+<div id="modalAcademic">
+    <div class="modal-box">
+        <h3 id="modalTitleAcademic"></h3>
+
+        <input id="faculty" placeholder="Khoa">
+        <input id="major" placeholder="Ngành">
+        <input id="classAcademic" placeholder="Lớp">
+        <input id="subject" placeholder="Môn">
+
+        <div class="modal-actions">
+            <button class="btn btn-success" onclick="saveAcademic()">Lưu</button>
+            <button class="btn btn-danger" onclick="closeAcademic()">Hủy</button>
         </div>
     </div>
+</div>
 
-    <!-- JS -->
-    <script src="assets/js/academic.js"></script>
+<div id="toast" class="toast"></div>
+
+<script src="assets/js/academic.js"></script>
 
 </body>
+<div id="importModal" class="modal">
+    <div class="modal-box">
 
+        <h3>📥 Import Excel</h3>
+
+        <div class="upload-box" id="uploadBox">
+            <p>Kéo thả file hoặc click để chọn</p>
+            <input type="file" id="excelFile" hidden>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn btn-danger" onclick="closeImport()">Đóng</button>
+        </div>
+
+    </div>
+</div>
 </html>
