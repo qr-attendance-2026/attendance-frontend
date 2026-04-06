@@ -1,0 +1,73 @@
+.scanner-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+}
+
+.scanner-box {
+    width: 420px;
+    height: 420px;
+    background: #1a0005;
+    border-radius: 25px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* CAMERA */
+#reader {
+    width: 100%;
+    height: 100%;
+}
+
+/* ❌ XÓA KHUNG TRẮNG CỦA LIB */
+#reader video {
+    object-fit: cover;
+}
+#reader canvas {
+    display: none !important;
+}
+
+/* PLACEHOLDER */
+#camera-off {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #ccc;
+}
+
+#camera-off .icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+/* GÓC */
+.corner {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 4px solid #ff2e63;
+}
+
+.tl { top: 20px; left: 20px; border-right: none; border-bottom: none; }
+.tr { top: 20px; right: 20px; border-left: none; border-bottom: none; }
+.bl { bottom: 20px; left: 20px; border-right: none; border-top: none; }
+.br { bottom: 20px; right: 20px; border-left: none; border-top: none; }
+
+/* LINE */
+.scan-line {
+    position: absolute;
+    width: 80%;
+    height: 2px;
+    background: #ff2e63;
+    left: 10%;
+    animation: scan 2s infinite;
+}
+
+@keyframes scan {
+    0% { top: 20%; }
+    50% { top: 75%; }
+    100% { top: 20%; }
+}
