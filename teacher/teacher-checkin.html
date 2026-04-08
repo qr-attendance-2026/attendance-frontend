@@ -1,213 +1,237 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Attendance - Check-in Pro</title>
+    <title>Hệ thống Điểm danh - Teacher</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    
-    <link rel="stylesheet" href="/attendance-frontend/teacher/style.css">
-    <link rel="stylesheet" href="/attendance-frontend/teacher/checkin.css">
-
+    <link rel="stylesheet" href="/attendance-frontend/teacher/css/style.css">
+    <link rel="stylesheet" href="/attendance-frontend/teacher/css/checkin.css">
     <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
     <script src="/attendance-frontend/teacher/nav.js"></script>
 </head>
-<body>
+
+<body class="bg-light">
     <div class="main-content">
-        <div class="container-fluid px-4">
-            <div class="row mb-4 align-items-end">
-                <div class="col-md-7">
-                    <h3 class="fw-bold mb-1">Quản lý Điểm danh</h3>
-                    <p class="text-muted m-0">
-                        <span class="me-3"><i class="bi bi-journal-code me-1 text-custom"></i> Lập trình Web nâng cao</span>
-                        <span><i class="bi bi-people me-1 text-custom"></i> Lớp: DH24-CNTT01</span>
-                    </p>
-                </div>
-                <div class="col-md-5 d-flex justify-content-md-end align-items-center mt-3">
-                    <div class="stats-wrapper">
-                        <div class="stat-item">
-                            <div class="stat-label-simple text-muted">Sĩ số</div>
-                            <div class="stat-value-simple">45</div>
-                        </div>
-                        <div class="stat-item stat-divider">
-                            <div class="stat-label-simple text-custom">Hiện diện</div>
-                            <div class="stat-value-simple text-present" id="presentCount">02</div>
-                        </div>
+        <div class="container-fluid px-4 pt-3">
+            <h5 class="fw-bold mb-3">Điểm danh</h5>
+
+            <div class="card border-0 shadow-sm p-4 mb-4">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold text-muted">Chọn đợt</label>
+                        <select id="filterSemester" class="form-select border-0 bg-light shadow-sm"
+                            onchange="filterClasses()">
+                            <option value="2026-2027|2">Học kỳ 2 năm học 2026-2027</option>
+                            <option value="2026-2027|1">Học kỳ 1 năm học 2026-2027</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold text-muted">Ngày điểm danh</label>
+                        <input type="date" id="attendanceDate" class="form-control border-0 bg-light shadow-sm">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold text-muted">Chọn lớp học phần</label>
+                        <select id="course_class_id" class="form-select border-0 bg-light shadow-sm"
+                            onchange="loadStudents()">
+                            <option value="">-- Đang tải danh sách lớp --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold text-danger">Thời gian QR (Phút)</label>
+                        <input type="number" id="duration_minutes"
+                            class="form-control border-0 bg-light shadow-sm text-danger fw-bold" value="15" min="1"
+                            max="120">
                     </div>
                 </div>
             </div>
 
-            <div class="row g-4">
-                <div class="col-xl-4 col-lg-5">
-                    <div class="card p-4 h-100 shadow-sm border-0">
-                        <div class="d-flex align-items-center mb-4 text-custom">
-                            <i class="bi bi-sliders2-vertical me-2"></i>
-                            <h6 class="fw-bold m-0">Cấu hình thời gian</h6>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small">Giờ bắt đầu</label>
-                            <input id="startTime" type="time" class="form-control bg-light" value="07:30">
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label fw-bold small">Giờ kết thúc</label>
-                            <input id="endTime" type="time" class="form-control bg-light" value="09:30">
-                        </div>
-                        
-                        <button class="btn btn-primary-custom btn-lg w-100 py-3 mb-2 shadow-sm" onclick="generateQR()">
-                            <i class="bi bi-qr-code-scan me-2"></i>Cập nhật mã QR
-                        </button>
-                        
-                        <button class="btn btn-outline-danger w-100 py-2 mb-3" onclick="stopAttendance()">
-                            <i class="bi bi-stop-circle me-2"></i>Dừng điểm danh
-                        </button>
-
-                        <div class="p-3 bg-light rounded-3 small text-muted mt-auto border-start border-4 border-success">
-                            <i class="bi bi-info-circle-fill me-1 text-custom"></i> 
-                            Sau <b id="displayEndTime" class="text-dark">09:30</b>, SV sẽ bị tính là muộn/vắng.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-8 col-lg-7 text-center">
-                    <div class="card p-4 h-100 d-flex flex-column align-items-center justify-content-center shadow-sm border-0">
-                        <div class="mb-3 w-100 d-flex justify-content-between">
-                            <span class="text-muted small fw-bold uppercase-tracking">Mã QR Lớp học</span>
-                            <span id="statusBadge" class="badge bg-success-subtle text-custom rounded-pill px-3">Đang hiệu lực</span>
-                        </div>
-                        
-                        <div class="qr-container bg-light d-flex align-items-center justify-content-center">
-                            <div id="qrPlaceholder" class="qr-placeholder text-muted">
-                                <i class="bi bi-qr-code d-block mb-2 icon-placeholder"></i>
-                                <span>Nhấn nút cập nhật để tạo mã</span>
-                            </div>
-                            <canvas id="qrcode" style="display:none"></canvas>
-                        </div>
-
-                        <div class="mt-4 d-flex gap-2">
-                            <button class="btn btn-outline-secondary btn-sm px-4 fw-600" onclick="handleAction('download')">
-                                <i class="bi bi-download me-1"></i> Lưu ảnh
-                            </button>
-                            <button class="btn btn-outline-secondary btn-sm px-4 fw-600" onclick="handleAction('print')">
-                                <i class="bi bi-printer me-1"></i> In
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            <div class="d-flex gap-2 mb-4 align-items-center">
+                <button class="btn btn-success px-4 py-2 shadow-sm"><i class="bi bi-save me-2"></i>Lưu điểm
+                    danh</button>
+                <button class="btn btn-danger px-4 py-2 shadow-sm" onclick="generateQR(1)">
+                    <i class="bi bi-qr-code me-2"></i>QR điểm danh
+                </button>
+                <button class="btn btn-secondary px-4 py-2 shadow-sm"><i class="bi bi-upc-scan me-2"></i>Quét
+                    mã</button>
             </div>
 
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
-                            <h6 class="fw-bold m-0 text-dark">
-                                <i class="bi bi-clock-history text-custom me-2"></i>Lịch sử quét mã hôm nay
-                            </h6>
-                            <span class="text-muted small">Cập nhật lúc: <span id="updateTime" class="fw-medium">--:--:--</span></span>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle m-0">
-                                <thead class="table-light text-secondary small">
-                                    <tr>
-                                        <th class="ps-4" style="width: 80px;">STT</th>
-                                        <th style="width: 150px;">MSSV</th>
-                                        <th>HỌ TÊN SINH VIÊN</th>
-                                        <th>THỜI GIAN QUÉT</th>
-                                        <th class="text-end pe-4">TRẠNG THÁI</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="checkinTable"></tbody>
-                            </table>
-                        </div>
+            <div class="card border-0 shadow-sm">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small">
+                            <tr>
+                                <th class="ps-4" width="40"><input type="checkbox" class="form-check-input"></th>
+                                <th width="60">STT</th>
+                                <th>MSSV</th>
+                                <th>Họ tên</th>
+                                <th>Trạng thái</th>
+                                <th class="pe-4">Lớp học</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceBody">
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">Vui lòng chọn lớp để xem danh sách
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="qrOverlay">
+        <div class="qr-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="qr-status-badge">
+                    <i class="bi bi-broadcast-pin me-1"></i> Đang phát mã QR
+                </div>
+                <button type="button" class="btn-close" onclick="closeQR()"></button>
+            </div>
+
+            <h5 class="fw-bold mb-1">Mã QR Điểm danh</h5>
+            <p class="text-muted small mb-4">Vui lòng quét mã để xác nhận hiện diện</p>
+
+            <div class="qrcode-wrapper mb-4">
+                <canvas id="qrcode"></canvas>
+            </div>
+
+            <div class="row g-2">
+                <div class="col-6">
+                    <div class="p-2 border rounded-3 bg-light">
+                        <div class="small text-muted">Lần điểm</div>
+                        <div class="fw-bold h5 mb-0" id="currentCheckNum">1</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="p-2 border rounded-3 bg-light">
+                        <div class="small text-muted">Thời gian còn</div>
+                        <div class="fw-bold h5 mb-0"><span id="displayDuration">15</span>'</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        const checkins = [
-            { id: "DH01", name: "Nguyễn Văn Bảo Anh", time: "08:30:12" },
-            { id: "DH02", name: "Trần Thị Mỹ Quỳnh", time: "09:10:45" }
-        ];
-        const getEl = id => document.getElementById(id);
+    <script type="module">
+        import teacherApi from './services/teacherApi.js';
 
-        function generateQR() {
-            const start = getEl("startTime").value, end = getEl("endTime").value;
-            getEl("displayEndTime").innerText = end;
-            getEl("qrPlaceholder").style.display = "none";
-            getEl("qrcode").style.display = "block";
-            getEl("statusBadge").className = "badge bg-success-subtle text-custom rounded-pill px-3";
-            getEl("statusBadge").innerText = "Đang hiệu lực";
+        let allClasses = [];
+        const el = (id) => document.getElementById(id);
 
-            QRCode.toCanvas(getEl("qrcode"), JSON.stringify({ class: "DH24-CNTT01", start, end, ts: Date.now() }), 
-                { width: 250, margin: 2, color: { dark: '#157347' } }, 
-                err => err && console.error(err)
-            );
-            renderTable();
+        document.addEventListener('DOMContentLoaded', async () => {
+            const dateInput = el("attendanceDate");
+            if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+            await initData();
+        });
+
+        async function initData() {
+            try {
+                const response = await teacherApi.getClasses();
+                if (response.success) {
+                    allClasses = response.data;
+                    window.filterClasses();
+                }
+            } catch (err) { console.error("Lỗi:", err); }
         }
 
-        function stopAttendance() {
-            if(!confirm("Dừng điểm danh và ẩn mã QR?")) return;
-            getEl("qrcode").style.display = "none";
-            getEl("qrPlaceholder").style.display = "block";
-            getEl("qrPlaceholder").innerHTML = '<i class="bi bi-x-circle text-danger d-block mb-2 icon-placeholder"></i><span class="text-danger fw-bold">Đã dừng điểm danh</span>';
-            getEl("statusBadge").className = "badge bg-secondary-subtle text-secondary rounded-pill px-3";
-            getEl("statusBadge").innerText = "Hết hiệu lực";
-        }
+        window.filterClasses = () => {
+            const semesterVal = el("filterSemester").value;
+            const [year, sem] = semesterVal.split('|');
+            const filtered = allClasses.filter(c => c.academic_year == year && c.semester == sem);
 
-        function renderTable() {
-            const checkinTable = getEl("checkinTable");
-            if (!checkinTable) return;
-
-            const end = getEl("endTime").value;
-            getEl("updateTime").innerText = new Date().toLocaleTimeString('vi-VN');
-
-            checkinTable.innerHTML = checkins.map((u, i) => {
-                const isLate = u.time.substring(0, 5) > end;
-                const shortName = u.name.split(' ').pop()[0];
-
-                return `
-                    <tr>
-                        <td class="ps-4 text-muted small">${i + 1}</td>
-                        <td class="fw-bold text-dark">${u.id}</td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <span class="avatar-circle me-2 d-flex align-items-center justify-content-center">
-                                    ${shortName}
-                                </span>
-                                <span class="fw-medium">${u.name}</span>
-                            </div>
-                        </td>
-                        <td class="text-muted small">${u.time}</td>
-                        <td class="text-end pe-4">
-                            <span class="status-pill ${isLate ? 'status-late' : 'status-ok'}">
-                                ${isLate ? 'Vào muộn' : 'Hợp lệ'}
-                            </span>
-                        </td>
-                    </tr>`;
-            }).join('');
-
-            getEl("presentCount").innerText = checkins.length.toString().padStart(2, '0');
-        }
-
-        function handleAction(type) {
-            const canvas = getEl("qrcode");
-            if (canvas.style.display === "none") return alert("Hãy tạo mã QR trước!");
-            const data = canvas.toDataURL("image/png");
-            if (type === 'download') {
-                const a = document.createElement('a'); a.href = data; a.download = 'QR_Attendance.png'; a.click();
+            const select = el("course_class_id");
+            if (filtered.length > 0) {
+                select.innerHTML = filtered.map(c => `
+                <option value="${c.id}">${c.class_code} - ${c.subject?.subject_name || 'Môn học'}</option>
+            `).join('');
+                window.loadStudents();
             } else {
-                const win = window.open('', '', 'width=600,height=600');
-                win.document.write(`<html><body style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;font-family:sans-serif">
-                    <h2 style="color:#157347">Mã QR Điểm danh</h2><p>Lớp: DH24-CNTT01</p><img src="${data}" style="width:350px"/>
-                    <script>window.onload = () => { window.print(); window.close(); }<\/script></body></html>`);
-                win.document.close();
+                select.innerHTML = '<option value="">Không có lớp học</option>';
+                el("attendanceBody").innerHTML = '<tr><td colspan="7" class="text-center py-4">Dữ liệu trống</td></tr>';
             }
-        }
+        };
 
-        window.onload = renderTable;
-        getEl("endTime").oninput = () => getEl("displayEndTime").innerText = getEl("endTime").value;
+        window.loadStudents = () => {
+            const classId = el("course_class_id").value;
+            const selectedClass = allClasses.find(c => c.id == classId);
+            if (selectedClass && selectedClass.students) {
+                el("attendanceBody").innerHTML = selectedClass.students.map((s, i) => `
+            <tr>
+                <td class="ps-4"><input type="checkbox" class="form-check-input"></td>
+                <td>${i + 1}</td>
+                <td><span class="fw-bold text-dark">${s.student_code}</span></td>
+                <td>${s.user?.name || 'N/A'}</td>
+                <td>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" 
+                            ${s.pivot?.check_1 ? 'checked' : ''} 
+                            id="check_${s.id}">
+                        <label class="form-check-label small" for="check_${s.id}">
+                            ${s.pivot?.check_1 ? '<span class="text-success">Đã có mặt</span>' : '<span class="text-danger">Vắng</span>'}
+                        </label>
+                    </div>
+                </td>
+                <td class="text-muted pe-4">${selectedClass.class_code}</td>
+            </tr>
+        `).join('');
+            }
+        };
+
+        let countdownInterval;
+
+        window.generateQR = async (checkNumber) => {
+            const classId = el("course_class_id").value;
+            const duration = el("duration_minutes").value;
+            if (!classId) return alert("Vui lòng chọn lớp!");
+
+            try {
+                const res = await teacherApi.createSession({
+                    course_class_id: parseInt(classId),
+                    check_number: checkNumber,
+                    duration_minutes: parseInt(duration)
+                });
+
+                if (res.success) {
+                    el("qrOverlay").style.display = "flex";
+                    el("currentCheckNum").innerText = checkNumber;
+
+                    let timeRemaining = parseInt(duration) * 60;
+                    el("displayDuration").innerText = duration;
+
+                    if (countdownInterval) clearInterval(countdownInterval);
+
+                    countdownInterval = setInterval(() => {
+                        timeRemaining--;
+
+                        if (timeRemaining <= 0) {
+                            clearInterval(countdownInterval);
+                            el("displayDuration").innerText = "0";
+                            alert("Hết thời gian điểm danh!");
+                            window.closeQR();
+                        } else {
+                            el("displayDuration").innerText = Math.ceil(timeRemaining / 60);
+                        }
+                    }, 1000);
+
+                    QRCode.toCanvas(el("qrcode"), res.data.qr_payload, {
+                        width: 450,
+                        margin: 2,
+                        color: { light: "#ffffff" },
+                        errorCorrectionLevel: 'H'
+                    });
+                }
+            } catch (err) { alert("Lỗi tạo phiên điểm danh!"); }
+        };
+
+        window.closeQR = () => {
+            el("qrOverlay").style.display = "none";
+            if (countdownInterval) clearInterval(countdownInterval);
+        };
     </script>
 </body>
+
 </html>

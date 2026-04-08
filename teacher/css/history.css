@@ -92,7 +92,16 @@
     color: var(--primary-green);
     font-weight: 700;
 }
-
+.hover-card {
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent !important;
+}
+.hover-card:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+    transition: all 0.2s ease;
+    border: 1px solid #198754 !important;
+}
 /* ===== 4. TABLE & QUICK VIEW ===== */
 .table thead th {
     background: #f8fafc;

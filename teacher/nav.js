@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // 1. Lấy thông tin giảng viên từ localStorage (đã lưu lúc login)
+    const teacherName = localStorage.getItem('teacher_name') || "Giảng viên";
+    const firstLetter = teacherName.charAt(0).toUpperCase();
+
     const navContent = `
         <div class="sidebar">
             <div class="logo">
@@ -19,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </a>
 
             <div class="mt-auto">
-                <a href="login.html" class="text-danger text-decoration-none small">
+                <a href="../../index.html" class="text-danger text-decoration-none small" id="logoutBtn">
                     <i class="bi bi-box-arrow-left me-2"></i> Đăng xuất
                 </a>
             </div>
@@ -27,15 +31,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
         <div class="topbar">
             <div class="d-flex align-items-center">
-                <span class="me-2 fw-medium">Teacher User</span>
-                <div class="avatar">T</div>
+                <span class="me-2 fw-medium">${teacherName}</span>
+                <div class="avatar">${firstLetter}</div>
             </div>
         </div>
     `;
 
     document.body.insertAdjacentHTML("afterbegin", navContent);
 
-    // Xử lý trạng thái Active
+    // 2. Xử lý logic Đăng xuất (Xóa sạch session khi thoát)
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.clear(); // Xóa token và thông tin user
+        });
+    }
+
+    // 3. Xử lý trạng thái Active
     const currentPage = window.location.pathname.split("/").pop();
     const navLinks = document.querySelectorAll(".sidebar a");
     navLinks.forEach(link => {

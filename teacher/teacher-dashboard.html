@@ -1,156 +1,154 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giảng viên | Quản lý lịch dạy</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <script src="/attendance-frontend/teacher/nav.js"></script>
-    <link rel="stylesheet" href="/attendance-frontend/teacher/style.css">
-    <link rel="stylesheet" href="/attendance-frontend/teacher/dashboard.css">
-
+    <link rel="stylesheet" href="/attendance-frontend/teacher/css/style.css">
+    <link rel="stylesheet" href="/attendance-frontend/teacher/css/dashboard.css">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://api-attendance-backend-520975280881.asia-southeast1.run.app https://cdn.jsdelivr.net https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com;">
 </head>
+
 <body>
 
-<div class="main-content">
-    <div class="container py-4">
-        
-        <div class="row mb-5 align-items-end">
-            <div class="col-md-7">
-                <h6 class="text-primary fw-bold text-uppercase mb-1 text-ls-2">Trình quản lý giảng dạy</h6>
-                <h2 class="fw-bold mb-0" id="teacherName">Đang tải...</h2>
-            </div>
-            <div class="col-md-5 text-md-end">
-                <div class="d-inline-flex align-items-center bg-white p-2 rounded-4 shadow-sm border">
-                    <div class="px-3 text-start">
-                        <div class="small text-muted fw-medium">Hôm nay</div>
-                        <div class="fw-bold text-dark" id="todayDate">...</div>
+    <div class="main-content">
+        <div class="container py-4">
+            <div class="row mb-5 align-items-end">
+                <div class="col-md-7">
+                    <h6 class="text-primary fw-bold text-uppercase mb-1 text-ls-2">Trình quản lý giảng dạy</h6>
+                    <h2 class="fw-bold mb-0" id="teacherName">Đang tải...</h2>
+                </div>
+                <div class="col-md-5 text-md-end">
+                    <div class="d-inline-flex align-items-center bg-white p-2 rounded-4 shadow-sm border">
+                        <div class="px-3 text-start">
+                            <div class="small text-muted fw-medium">Hôm nay</div>
+                            <div class="fw-bold text-dark" id="todayDate">...</div>
+                        </div>
+                        <div class="bg-primary text-white px-3 py-2 rounded-3 ms-2 fw-bold" id="currentTime">00:00:00
+                        </div>
                     </div>
-                    <div class="bg-primary text-white px-3 py-2 rounded-3 ms-2 fw-bold" id="currentTime">00:00:00</div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-11 mx-auto">
+                    <div class="d-flex align-items-center mb-4">
+                        <h5 class="fw-bold mb-0 text-dark">Lộ trình hôm nay</h5>
+                    </div>
+                    <div id="schedule-list" class="d-grid gap-3"></div>
                 </div>
             </div>
         </div>
-
-        <div class="row g-4 mb-5" id="statsContainer"></div>
-
-        <div class="row">
-            <div class="col-lg-11 mx-auto">
-                <div class="d-flex align-items-center mb-4">
-                    <h5 class="fw-bold mb-0 text-dark">Lộ trình hôm nay</h5>
-                </div>
-                <div id="scheduleContainer" class="d-grid gap-3"></div>
-            </div>
-        </div>
-
     </div>
-</div>
 
-<script>
-    const mockData = {
-        teacherName: "Nguyễn Văn A",
-        today: "Thứ Hai, 15 tháng 03, 2026",
-        stats: [
-            { label: "Ca học hôm nay", value: "03", unit: "Ca dạy" },
-            { label: "Tổng sinh viên", value: "128", unit: "Học viên" },
-            { label: "Phòng học", value: "A.202", unit: "Hiện tại" }
-        ],
-        schedule: [
-            {
-                time: { start: "07:00", end: "08:40" },
-                subject: "Kiến trúc phần mềm",
-                room: "C.102",
-                class: "DH24-CNTT02",
-                present: 42,
-                status: "completed",
-                statusText: "Đã xong"
-            },
-            {
-                time: { start: "09:00", end: "11:30" },
-                subject: "Lập trình Web nâng cao",
-                room: "A.202",
-                class: "DH24-CNTT01",
-                present: 45,
-                status: "active",
-                statusText: "Đang dạy"
-            },
-            {
-                time: { start: "13:30", end: "15:10" },
-                subject: "An toàn thông tin",
-                room: "B.305",
-                class: "DH24-ANM01",
-                present: 0,
-                status: "upcoming",
-                statusText: "Sắp tới"
+    <script type="module">
+        import { dashboardService } from './services/dashboardService.js';
+        window.dashboardService = dashboardService;
+
+        async function initDashboard() {
+            const teacherNameElement = document.getElementById('teacherName');
+            const scheduleContainer = document.getElementById('schedule-list');
+
+            const savedName = localStorage.getItem('teacher_name');
+            if (savedName && teacherNameElement) {
+                teacherNameElement.innerText = savedName;
             }
-        ]
-    };
 
-    function startClock() {
-        setInterval(() => {
-            document.getElementById('currentTime').innerText = new Date().toLocaleTimeString('vi-VN', { hour12: false });
-        }, 1000);
-    }
+            try {
+                const response = await window.dashboardService.getTeacherStats();
+                console.log("Dữ liệu API trả về:", response);
 
-    function renderDashboard(data) {
-        document.getElementById('teacherName').innerText = `Chào, ${data.teacherName}`;
-        document.getElementById('todayDate').innerText = data.today;
+                const teacherData = response.data?.teacher || response.teacher;
+                if (teacherData && teacherNameElement) {
+                    teacherNameElement.innerText = teacherData.name;
+                    localStorage.setItem('teacher_name', teacherData.name);
+                }
 
-        // Render Stats
-        document.getElementById('statsContainer').innerHTML = data.stats.map(s => `
-            <div class="col-md-4 stat-item">
-                <span class="text-muted small fw-bold text-uppercase" style="letter-spacing: 1px;">${s.label}</span>
-                <div class="d-flex align-items-baseline justify-content-center gap-2 mt-1">
-                    <h2 class="fw-800 mb-0" style="font-weight: 800;">${s.value}</h2>
-                    <span class="small text-muted fw-medium">${s.unit}</span>
-                </div>
-            </div>
-        `).join('');
+                const classes = response.data || response;
 
-        // Render Schedule Timeline
-        document.getElementById('scheduleContainer').innerHTML = data.schedule.map(item => {
-            const isActive = item.status === 'active';
-            const isDone = item.status === 'completed';
-            
-            const statusDotColor = isActive ? '#157347' : '#94a3b8';
-            
-            return `
-                <div class="schedule-card p-4 ${isActive ? 'active' : ''} ${isDone ? 'opacity-50' : ''}">
-                    <div class="d-md-flex align-items-center gap-4">
-                        <div class="time-label">
-                            <div class="text-dark">${item.time.start}</div>
-                            <div class="text-muted small">${item.time.end}</div>
-                        </div>
-                        
-                        <div class="flex-grow-1 mt-3 mt-md-0">
-                            <div class="d-flex align-items-center gap-2 mb-1">
-                                <span class="room-badge">PHÒNG ${item.room}</span>
-                                <span class="small fw-bold text-uppercase" style="font-size: 0.6rem; color: ${statusDotColor}">
-                                    ● ${item.statusText}
-                                </span>
+                if (scheduleContainer) {
+                    renderSchedule(Array.isArray(classes) ? classes : [], scheduleContainer);
+                }
+
+            } catch (error) {
+                console.error("❌ Lỗi tải dữ liệu:", error);
+                if (scheduleContainer) {
+                    scheduleContainer.innerHTML = `
+                    <div class="alert alert-danger rounded-4">
+                        Không thể kết nối máy chủ. Vui lòng thử lại sau.
+                    </div>`;
+                }
+            }
+        }
+
+        function renderSchedule(classes, container) {
+            if (classes.length === 0) {
+                container.innerHTML = `<div class="text-center py-5"><p>Hôm nay không có lịch dạy.</p></div>`;
+                return;
+            }
+
+            container.innerHTML = classes.map(item => {
+                const subjectName = item.subject?.subject_name || "Môn học chưa xác định";
+                let roomDisplay = "Chưa xếp phòng";
+
+                if (item.room) {
+                    roomDisplay = item.room.name || item.room.room_code;
+                } else if (item.schedules && item.schedules.length > 0) {
+                    roomDisplay = item.schedules[0].room || item.schedules[0].location || "Phòng B01";
+                }
+
+                return `
+                <div class="card border-0 shadow-sm rounded-4 mb-3">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="badge bg-primary-subtle text-primary mb-2">Lớp: ${item.class_code}</div>
+                                <h5 class="fw-bold mb-1 text-dark">${subjectName}</h5>
+                                
+                                <div class="text-muted small mt-2">
+                                    <span class="me-3">
+                                        <i class="bi bi-geo-alt-fill"></i> 📍 Phòng: 
+                                        <span class="text-dark fw-bold">${roomDisplay}</span>
+                                    </span>
+                                    <span>
+                                        <i class="bi bi-people-fill"></i> 👥 SV: ${item.students?.length || 0}
+                                    </span>
+                                </div>
                             </div>
-                            <h5 class="fw-bold mb-1">${item.subject}</h5>
-                            <div class="small text-muted">
-                                <strong>${item.class}</strong> • ${item.present > 0 ? `${item.present} sinh viên` : 'Chưa điểm danh'}
+                            <div class="text-end">
+                                <button class="btn btn-primary rounded-3 px-4 fw-semibold shadow-sm" 
+                                        onclick="window.location.href='teacher-checkin.html?class_id=${item.id}'">
+                                    Mở điểm danh
+                                </button>
                             </div>
-                        </div>
-
-                        <div class="mt-3 mt-md-0">
-                            ${isActive ? 
-                                `<a href="teacher-checkin.html" class="btn btn-action btn-primary-custom shadow-sm">ĐIỂM DANH NGAY</a>` : 
-                                `<a href="teacher-history.html" <button class="btn btn-action btn-light border fw-bold" ${item.status === 'upcoming' ? 'disabled' : ''}>XEM CHI TIẾT</button></a>`
-                            }
                         </div>
                     </div>
                 </div>
             `;
-        }).join('');
-    }
+            }).join('');
+        }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        startClock();
-        renderDashboard(mockData);
-    });
-</script>
+        function updateDateTime() {
+            const now = new Date();
+            if (document.getElementById('currentTime'))
+                document.getElementById('currentTime').innerText = now.toLocaleTimeString('vi-VN');
+            if (document.getElementById('todayDate'))
+                document.getElementById('todayDate').innerText = now.toLocaleDateString('vi-VN', {
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                });
+        }
+
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
 </body>
+
 </html>
