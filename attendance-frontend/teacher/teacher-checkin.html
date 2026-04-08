@@ -81,44 +81,51 @@
         </div>
     </div>
 
-    <div id="qrOverlay" class="overlay-container" style="display:none;">
-        <div class="qr-card position-relative"> 
-            <button type="button" class="btn-close p-3 position-absolute top-0 end-0" onclick="closeQR()"></button>
-            <div class="text-center w-100">
-                <div class="qr-status-badge mb-3 d-inline-block bg-primary text-white p-2 rounded">
-                    <i class="bi bi-broadcast-pin me-1"></i> Đang phát mã QR
-                </div>
-                <h5 class="fw-bold mb-3">Mã QR Điểm danh</h5>
-                <div class="qrcode-wrapper mb-4">
-                    <canvas id="qrcode"></canvas>
-                </div>
-                <div class="row g-2">
-                    <div class="col-6">
-                        <div class="p-2 border rounded bg-light">
-                            <div class="small text-muted">Lần điểm</div>
-                            <div class="fw-bold h5 mb-0" id="currentCheckNum">1</div>
-                        </div>
+<div id="qrOverlay" class="overlay-container" style="display:none;">
+    <div class="qr-card"> 
+        <div class="text-center w-100">
+            <div class="qr-status-badge mb-3 d-inline-block bg-primary text-white p-2 rounded">
+                <i class="bi bi-broadcast-pin me-1"></i> Đang phát mã QR
+            </div>
+            <h5 class="fw-bold mb-3">Mã QR Điểm danh</h5>
+            <div class="qrcode-wrapper mb-4">
+                <canvas id="qrcode"></canvas>
+            </div>
+            <div class="row g-2 mb-4">
+                <div class="col-6">
+                    <div class="p-2 border rounded bg-light">
+                        <div class="small text-muted">Lần điểm</div>
+                        <div class="fw-bold h5 mb-0" id="currentCheckNum">1</div>
                     </div>
-                    <div class="col-6">
-                        <div class="p-2 border rounded bg-light">
-                            <div class="small text-muted">Còn lại</div>
-                            <div class="fw-bold h5 mb-0"><span id="displayDuration">15</span>'</div>
-                        </div>
+                </div>
+                <div class="col-6">
+                    <div class="p-2 border rounded bg-light">
+                        <div class="small text-muted">Còn lại</div>
+                        <div class="fw-bold h5 mb-0"><span id="displayDuration">15</span>'</div>
                     </div>
                 </div>
             </div>
+            
+            <button class="btn btn-danger w-100 py-2 shadow-sm" onclick="closeQR()">
+                <i class="bi bi-stop-circle me-2"></i>Đóng phiên điểm danh
+            </button>
         </div>
     </div>
+</div>
 
-    <div id="scannerOverlay" class="overlay-container" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;">
-        <div class="card p-3" style="width: 90%; max-width: 500px;">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="mb-0">Quét mã QR Sinh viên</h5>
-                <button type="button" class="btn-close" onclick="closeScanner()"></button>
-            </div>
-            <div id="reader" style="width: 100%;"></div>
+<div id="scannerOverlay" class="overlay-container" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;">
+    <div class="card p-4 shadow-lg border-0" style="width: 95%; max-width: 500px; border-radius: 20px;">
+        <div class="text-center mb-3">
+            <h5 class="fw-bold">Quét mã QR Sinh viên</h5>
+            <p class="text-muted small">Vui lòng đưa mã QR của sinh viên vào khung hình</p>
         </div>
+        <div id="reader" class="overflow-hidden rounded-3 mb-4" style="width: 100%;"></div>
+        
+        <button class="btn btn-outline-danger w-100 py-2" onclick="closeScanner()">
+            <i class="bi bi-x-circle me-2"></i>Dừng quét mã
+        </button>
     </div>
+</div>
 
     <script type="module">
         import teacherApi from './services/teacherApi.js';
