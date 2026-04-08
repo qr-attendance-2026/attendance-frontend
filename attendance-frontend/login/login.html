@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Attendance STU Premium</title>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --primary: #d32f2f;
@@ -14,231 +16,442 @@
             --transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Be Vietnam Pro', sans-serif; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
 
         body {
             height: 100vh;
             background: #050505;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
         }
 
         /* CONTAINER CHÍNH */
         .container {
-            width: 95%; max-width: 1400px; height: 85vh;
-            border-radius: 35px; overflow: hidden;
+            width: 95%;
+            max-width: 1400px;
+            height: 85vh;
+            border-radius: 35px;
+            overflow: hidden;
             position: relative;
-            box-shadow: 0 60px 120px rgba(0,0,0,0.9);
+            box-shadow: 0 60px 120px rgba(0, 0, 0, 0.9);
             display: flex;
             animation: slideIn 1.5s var(--transition);
         }
 
         @keyframes slideIn {
-            from { opacity: 0; transform: scale(1.05); filter: blur(10px); }
-            to { opacity: 1; transform: scale(1); filter: blur(0); }
+            from {
+                opacity: 0;
+                transform: scale(1.05);
+                filter: blur(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0);
+            }
         }
 
         /* BACKGROUND */
-        .bg-wrapper { position: absolute; inset: 0; z-index: 1; }
+        .bg-wrapper {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
         .bg-img {
-            width: 100%; height: 100%;
+            width: 100%;
+            height: 100%;
             background: url('imagine/bacrao.jpg') center/cover no-repeat;
             transition: transform 12s linear;
             transform: scale(1.1);
         }
-        .container:hover .bg-img { transform: scale(1.2); }
+
+        .container:hover .bg-img {
+            transform: scale(1.2);
+        }
 
         .overlay {
-            position: absolute; inset: 0;
-            background: linear-gradient(105deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(105deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);
             z-index: 2;
         }
 
         /* NAVIGATION */
-        .nav { position: absolute; top: 45px; left: 60px; z-index: 10; display: flex; align-items: center; gap: 15px; }
-        .logo-text { color: white; font-weight: 700; font-size: 26px; letter-spacing: -1px; }
+        .nav {
+            position: absolute;
+            top: 45px;
+            left: 60px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-text {
+            color: white;
+            font-weight: 700;
+            font-size: 26px;
+            letter-spacing: -1px;
+        }
 
         /* CONTENT */
         .content {
-            position: relative; z-index: 5; width: 50%; height: 100%;
-            padding: 0 100px; display: flex; flex-direction: column; justify-content: center;
+            position: relative;
+            z-index: 5;
+            width: 50%;
+            height: 100%;
+            padding: 0 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             color: #fff;
         }
 
         .content h1 {
-            font-size: clamp(3rem, 6vw, 5rem); font-weight: 800; line-height: 1; margin-bottom: 25px;
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 25px;
             background: linear-gradient(to bottom, #fff, #999);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             background-clip: text;
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
+
 
         .content p {
-            font-size: 1.15rem; line-height: 1.8; margin-bottom: 45px;
-            opacity: 0.8; max-width: 550px; font-weight: 300;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            margin-bottom: 45px;
+            opacity: 0.8;
+            max-width: 550px;
+            font-weight: 300;
         }
 
         .btn-main {
-            padding: 20px 50px; width: fit-content; border: none; border-radius: 50px;
-            background: var(--primary); color: #fff; font-size: 1.05rem; font-weight: 700;
-            cursor: pointer; transition: var(--transition);
+            padding: 20px 50px;
+            width: fit-content;
+            border: none;
+            border-radius: 50px;
+            background: var(--primary);
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
             box-shadow: 0 15px 40px rgba(36, 30, 30, 0.4);
-            text-transform: uppercase; letter-spacing: 1px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .btn-main:hover { transform: translateY(-7px) scale(1.05); box-shadow: 0 25px 50px rgba(211,47,47,0.6); }
+        .btn-main:hover {
+            transform: translateY(-7px) scale(1.05);
+            box-shadow: 0 25px 50px rgba(211, 47, 47, 0.6);
+        }
 
         /* LOGIN BOX POPUP */
         .login-box {
-            position: fixed; top: 50%; left: 50%;
+            position: fixed;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%) scale(0.85);
-            width: 440px; padding: 60px 45px;
-            border-radius: 45px; background: var(--glass-white);
-            backdrop-filter: blur(30px); border: 1px solid rgba(255,255,255,0.4);
-            box-shadow: 0 40px 100px rgba(0,0,0,0.6), inset 0 0 20px rgba(255,255,255,0.5);
-            opacity: 0; visibility: hidden; transition: var(--transition); z-index: 100;
+            width: 440px;
+            padding: 60px 45px;
+            border-radius: 45px;
+            background: var(--glass-white);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 100;
         }
 
-        .login-box.active { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+        .login-box.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
 
-        .login-box h2 { font-size: 30px; margin-bottom: 35px; text-align: center; color: var(--text-dark); font-weight: 800; }
+        .login-box h2 {
+            font-size: 30px;
+            margin-bottom: 35px;
+            text-align: center;
+            color: var(--text-dark);
+            font-weight: 800;
+        }
 
-        .input-group { margin-bottom: 22px; position: relative; }
+        .input-group {
+            margin-bottom: 22px;
+            position: relative;
+        }
+
         .input-group input {
-            width: 100%; padding: 18px 25px; border-radius: 20px;
-            border: 2px solid #e0e0e0; background: #f8f9fa;
-            outline: none; font-size: 16px; transition: var(--transition);
+            width: 100%;
+            padding: 18px 25px;
+            border-radius: 20px;
+            border: 2px solid #e0e0e0;
+            background: #f8f9fa;
+            outline: none;
+            font-size: 16px;
+            transition: var(--transition);
         }
 
-        .input-group input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 10px 25px rgba(211,47,47,0.1); }
+        .input-group input:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 10px 25px rgba(211, 47, 47, 0.1);
+        }
 
         /* QUÊN MẬT KHẨU */
         .forgot-link {
-            display: block; text-align: right; margin-top: -12px; margin-bottom: 25px;
-            font-size: 13px; color: #777; text-decoration: none; font-weight: 500;
+            display: block;
+            text-align: right;
+            margin-top: -12px;
+            margin-bottom: 25px;
+            font-size: 13px;
+            color: #777;
+            text-decoration: none;
+            font-weight: 500;
             transition: 0.3s;
         }
-        .forgot-link:hover { color: var(--primary); text-decoration: underline; }
 
-        .login-btn {
-            width: 100%; padding: 18px; border: none; border-radius: 20px;
-            background: var(--text-dark); color: #fff; font-weight: 700;
-            font-size: 17px; cursor: pointer; transition: var(--transition);
+        .forgot-link:hover {
+            color: var(--primary);
+            text-decoration: underline;
         }
 
-        .login-btn:hover { background: var(--primary); transform: translateY(-3px); box-shadow: 0 15px 30px rgba(211,47,47,0.3); }
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 20px;
+            background: var(--text-dark);
+            color: #fff;
+            font-weight: 700;
+            font-size: 17px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
 
-        .close-btn { position: absolute; top: 30px; right: 35px; font-size: 22px; cursor: pointer; color: #aaa; }
+        .login-btn:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(211, 47, 47, 0.3);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 30px;
+            right: 35px;
+            font-size: 22px;
+            cursor: pointer;
+            color: #aaa;
+        }
 
         /* TOAST NOTIFICATION */
         #toast {
-            position: fixed; top: 30px; right: 30px;
-            background: #1a1a1a; color: white; padding: 20px 35px;
-            border-radius: 20px; font-weight: 600; z-index: 1000;
-            transform: translateX(150%); transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4); border-left: 5px solid var(--primary);
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: #1a1a1a;
+            color: white;
+            padding: 20px 35px;
+            border-radius: 20px;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-left: 5px solid var(--primary);
         }
-        #toast.show { transform: translateX(0); }
+
+        #toast.show {
+            transform: translateX(0);
+        }
 
         /* BLUR EFFECT */
-        .blur-target { transition: 0.8s var(--transition); }
-        .is-blurred { filter: blur(20px) brightness(0.6) scale(0.98); }
+        .blur-target {
+            transition: 0.8s var(--transition);
+        }
 
+        .is-blurred {
+            filter: blur(20px) brightness(0.6) scale(0.98);
+        }
     </style>
 </head>
+
 <body>
 
-<div id="toast"></div>
+    <div id="toast"></div>
 
-<div class="container blur-target" id="main">
-    <div class="bg-wrapper">
-        <div class="bg-img"></div>
+    <div class="container blur-target" id="main">
+        <div class="bg-wrapper">
+            <div class="bg-img"></div>
+        </div>
+        <div class="overlay"></div>
+
+        <nav class="nav">
+            <img src="imagine/Logo_STU.png" alt="" height="55" onerror="this.style.display='none'">
+            <span class="logo-text">STU PREMIUM</span>
+        </nav>
+
+        <div class="content">
+            <h1>STU<br>QR Access</h1>
+            <p>Hệ thống điểm danh sinh viên bằng mã QR – Công nghệ dẫn đầu, chuẩn xác tuyệt đối trong mọi khung hình.
+            </p>
+            <button class="btn-main" onclick="openLogin()">Đăng Nhập Tại Đây</button>
+        </div>
     </div>
-    <div class="overlay"></div>
 
-    <nav class="nav">
-        <img src="imagine/Logo_STU.png" alt="" height="55" onerror="this.style.display='none'">
-        <span class="logo-text">STU PREMIUM</span>
-    </nav>
+    <div class="login-box" id="loginBox">
+        <div class="close-btn" onclick="closeLogin()">✕</div>
+        <h2>Đăng Nhập</h2>
 
-    <div class="content">
-        <h1>STU<br>QR Access</h1>
-        <p>Hệ thống điểm danh sinh viên bằng mã QR – Công nghệ dẫn đầu, chuẩn xác tuyệt đối trong mọi khung hình.</p>
-        <button class="btn-main" onclick="openLogin()">Đăng Nhập Tại Đây</button>
+        <div class="input-group">
+            <input type="text" id="mssv" placeholder="Mã số sinh viên">
+        </div>
+        <div class="input-group">
+            <input type="password" id="pass" placeholder="Mật khẩu">
+        </div>
+
+        <a href="javascript:void(0)" class="forgot-link" onclick="handleForgot()">Quên mật khẩu?</a>
+
+        <button class="login-btn" onclick="login()">BẮT ĐẦU TRUY CẬP</button>
     </div>
-</div>
 
-<div class="login-box" id="loginBox">
-    <div class="close-btn" onclick="closeLogin()">✕</div>
-    <h2>Đăng Nhập</h2>
-    
-    <div class="input-group">
-        <input type="text" id="mssv" placeholder="Mã số sinh viên">
-    </div>
-    <div class="input-group">
-        <input type="password" id="pass" placeholder="Mật khẩu">
-    </div>
-    
-    <a href="javascript:void(0)" class="forgot-link" onclick="handleForgot()">Quên mật khẩu?</a>
-    
-    <button class="login-btn" onclick="login()">BẮT ĐẦU TRUY CẬP</button>
-</div>
+    <script>
+        const loginBox = document.getElementById("loginBox");
+        const mainContent = document.getElementById("main");
+        const toast = document.getElementById("toast");
 
-<script>
-    const loginBox = document.getElementById("loginBox");
-    const mainContent = document.getElementById("main");
-    const toast = document.getElementById("toast");
-
-    function showToast(msg) {
-        toast.innerText = msg;
-        toast.classList.add("show");
-        setTimeout(() => toast.classList.remove("show"), 3500);
-    }
-
-    function openLogin(){
-        loginBox.classList.add("active");
-        mainContent.classList.add("is-blurred");
-    }
-
-    function closeLogin(){
-        loginBox.classList.remove("active");
-        mainContent.classList.remove("is-blurred");
-    }
-
-    function handleForgot() {
-        showToast("⚠️ Vui lòng liên hệ trực tiếp Phòng Đào Tạo để được hỗ trợ cấp lại.");
-    }
-
-    // Đóng popup khi click ra ngoài
-    window.onclick = function(event) {
-        if (event.target == document.body && loginBox.classList.contains("active")) {
-            closeLogin();
-        }
-    }
-
-    function login(){
-        const mssv = document.getElementById("mssv").value.trim();
-        const pass = document.getElementById("pass").value.trim();
-
-        if(!mssv || !pass){
-            showToast(" 🙅‍♂️ Vui lòng không để trống thông tin!");
-            return;
+        function showToast(msg) {
+            toast.innerText = msg;
+            toast.classList.add("show");
+            setTimeout(() => toast.classList.remove("show"), 3500);
         }
 
-        const btn = document.querySelector(".login-btn");
-        btn.innerText = "ĐANG XÁC THỰC...";
-        btn.style.background = "#444";
+        function openLogin() {
+            loginBox.classList.add("active");
+            mainContent.classList.add("is-blurred");
+        }
 
-        setTimeout(() => {
-            showToast("✓ Đăng nhập thành công!");
-            setTimeout(() => {
-                window.location.href = "../student/views/sinh-vien/ho-so.html";
-            }, 800);
-        }, 1200);
-    }
-</script>
+        function closeLogin() {
+            loginBox.classList.remove("active");
+            mainContent.classList.remove("is-blurred");
+        }
+
+        function handleForgot() {
+            showToast("⚠️ Vui lòng liên hệ trực tiếp Phòng Đào Tạo để được hỗ trợ cấp lại.");
+        }
+
+        // Đóng popup khi click ra ngoài
+        window.onclick = function (event) {
+            if (event.target == document.body && loginBox.classList.contains("active")) {
+                closeLogin();
+            }
+        }
+
+        const API_URL = "https://api-attendance-backend-520975280881.asia-southeast1.run.app/api";
+        async function login() {
+            const mssv = document.getElementById("mssv").value.trim();
+            const pass = document.getElementById("pass").value.trim();
+
+            if (!mssv || !pass) {
+                showToast(" 🙅‍♂️ Vui lòng không để trống thông tin!");
+                return;
+            }
+
+            // 1. Xử lý thông minh: Nếu user chỉ nhập MSSV (VD: DH52201607), tự động nối đuôi email trường.
+            // Nếu họ có gõ sẵn @ (ví dụ GV hoặc Admin dùng email khác) thì giữ nguyên.
+            let loginEmail = mssv;
+            if (!loginEmail.includes('@')) {
+                loginEmail = loginEmail.toLowerCase() + '@student.stu.edu.vn';
+            }
+
+            const btn = document.querySelector(".login-btn");
+            const originalText = btn.innerText;
+
+            // Đổi UI sang trạng thái loading
+            btn.innerText = "ĐANG XÁC THỰC...";
+            btn.style.background = "#444";
+            btn.disabled = true;
+
+            try {
+                // 2. Gọi API Login
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json' // Bắt buộc để Laravel trả về JSON khi có lỗi thay vì chuyển trang
+                    },
+                    body: JSON.stringify({
+                        email: loginEmail,
+                        password: pass
+                    })
+                });
+
+                const data = await response.json();
+
+                // 3. Xử lý kết quả trả về
+                if (response.ok && data.success) {
+                    showToast("✓ Đăng nhập thành công!");
+
+                    // QUAN TRỌNG: Lưu Bearer Token và User Info vào bộ nhớ trình duyệt
+                    localStorage.setItem('access_token', data.data.token);
+                    localStorage.setItem('user_info', JSON.stringify(data.data.user));
+
+                    // Chuyển hướng theo Role (Phân quyền)
+                    setTimeout(() => {
+                        const role = data.data.user.role;
+                        if (role === 'student') {
+                            window.location.href = "../student/views/sinh-vien/ho-so.html";
+                        } else if (role === 'teacher') {
+                            window.location.href = "../teacher/teacher-dashboard.html"; // Redirect to specific teacher dashboard
+                        } else {
+                            window.location.href = "../admin/index.html"; // Redirect to real admin page
+                        }
+                    }, 800);
+
+                } else {
+                    // Xử lý lỗi (Sai pass, tài khoản không tồn tại...)
+                    let errorMsg = data.message || "Đăng nhập thất bại!";
+
+                    // Laravel Validation lỗi thường nằm trong mảng errors
+                    if (data.errors && data.errors.email) {
+                        errorMsg = data.errors.email[0];
+                    }
+
+                    showToast("❌ " + errorMsg);
+
+                    // Reset lại nút bấm
+                    btn.innerText = originalText;
+                    btn.style.background = ""; // Trả về CSS gốc
+                    btn.disabled = false;
+                }
+
+            } catch (error) {
+                console.error("Lỗi kết nối:", error);
+                showToast("❌ Lỗi kết nối đến máy chủ! Vui lòng thử lại sau.");
+                btn.innerText = originalText;
+                btn.style.background = "";
+                btn.disabled = false;
+            }
+        }
+    </script>
 
 </body>
+
 </html>

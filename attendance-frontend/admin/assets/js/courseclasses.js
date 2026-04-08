@@ -1,4 +1,7 @@
-// ===== TOAST =====
+// ===== DATA =====
+let courseClasses = [];
+const API_BASE_URL = "https://api-attendance-backend-520975280881.asia-southeast1.run.app/api";
+
 function showToast(msg) {
     const t = document.getElementById("toast");
     t.innerText = msg;
@@ -6,37 +9,38 @@ function showToast(msg) {
     setTimeout(() => t.style.display = "none", 2000);
 }
 
-// ===== DATA =====
-let lecturers = [];
-const API_BASE_URL = "https://api-attendance-backend-520975280881.asia-southeast1.run.app/api";
-
-async function fetchLecturers() {
+async function fetchCourseClasses() {
     const token = localStorage.getItem('access_token');
     if (!token) return;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/admin/users?role=teacher`, {
+        const response = await fetch(`${API_BASE_URL}/admin/course-classes`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();
         
         if (response.ok) {
-            let users = [];
-            if (Array.isArray(data.data)) users = data.data; 
-            else if (data.data && Array.isArray(data.data.data)) users = data.data.data; 
-            else if (Array.isArray(data)) users = data; 
+            let resData = [];
+            if (Array.isArray(data.data)) resData = data.data; 
+            else if (data.data && Array.isArray(data.data.data)) resData = data.data.data; 
+            else if (Array.isArray(data)) resData = data; 
 
-            const teacherUsers = users.filter(u => u.role === 'teacher' || u.teacher !== null);
-
-            lecturers = teacherUsers.map(u => ({
-                id: u.teacher && u.teacher.teacher_code ? u.teacher.teacher_code : u.id,
-                name: u.name,
-                email: u.email || "-",
-                subject: u.teacher && u.teacher.department ? u.teacher.department : "-"
+            courseClasses = resData.map(c => ({
+                id: c.id,
+                semester: c.semester || "-",
+                academic_year: c.academic_year || "-",
+                subjectName: (c.subject && (c.subject.subject_name || c.subject.name)) || "-",
+                group: c.course_name || c.class_group || c.group || "-",
+                teacherName: (c.teacher && c.teacher.user && c.teacher.user.name) || (c.teacher && c.teacher.teacher_code) || "-",
+                dayOfWeek: c.day_of_week || "-",
+                period: c.start_period && c.end_period ? `${c.start_period} - ${c.end_period}` : "-",
+                room: c.room || c.room_number || "-",
+                startDate: c.start_date || "-",
+                endDate: c.end_date || "-"
             }));
             renderTable();
         } else {
-            showToast(data.message || "Không thể lấy dữ liệu giảng viên");
+            showToast(data.message || "Không thể lấy dữ liệu lớp học phần");
         }
     } catch (error) {
         showToast("Lỗi kết nối API");
@@ -44,8 +48,8 @@ async function fetchLecturers() {
 }
 
 // ===== RENDER =====
-function renderTable(data = lecturers) {
-    const tbody = document.querySelector("#lecturerTable tbody");
+function renderTable(data = courseClasses) {
+    const tbody = document.querySelector("#academicTable tbody");
     if (!tbody) return;
 
     tbody.innerHTML = "";
@@ -53,7 +57,7 @@ function renderTable(data = lecturers) {
     if (data.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="5" style="text-align:center;color:#94a3b8">
+                <td colspan="11" style="text-align:center;color:#94a3b8">
                     Không có dữ liệu
                 </td>
             </tr>
@@ -61,17 +65,24 @@ function renderTable(data = lecturers) {
         return;
     }
 
-    data.forEach((gv, index) => {
+    data.forEach((item) => {
         tbody.innerHTML += `
         <tr>
-            <td>${gv.id}</td>
-            <td>${gv.name}</td>
-            <td>${gv.email}</td>
-            <td>${gv.subject}</td>
+            <td>${item.semester}</td>
+            <td>${item.academic_year}</td>
+            <td>${item.subjectName}</td>
+            <td>${item.group}</td>
+            <td>${item.teacherName}</td>
+            <td>${item.dayOfWeek}</td>
+            <td>${item.period}</td>
+            <td>${item.room}</td>
+            <td>${item.startDate}</td>
+            <td>${item.endDate}</td>
             <td>
-                <!-- Action buttons based on requirements -->
+                <!-- Hành động tùy thích -->
             </td>
-        </tr>`;
+        </tr>
+        `;
     });
 }
 
@@ -92,10 +103,10 @@ async function handleExcelFile(file) {
     const formData = new FormData();
     formData.append("file", file);
 
-    showToast("Đang tải lên...");
+    showToast("Đang tải lên lịch trình...");
 
     try {
-        const response = await fetch(`${API_BASE_URL}/admin/import/teachers`, {
+        const response = await fetch(`${API_BASE_URL}/admin/import/schedule`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -106,9 +117,9 @@ async function handleExcelFile(file) {
         const data = await response.json();
         
         if (response.ok) {
-            showToast(data.message || "Import thành công!");
+            showToast(data.message || "Import lịch trình thành công!");
             closeImport();
-            fetchLecturers(); // Load lại data
+            fetchCourseClasses(); // Load lại data
         } else {
             showToast(data.message || "Import thất bại!");
         }
@@ -119,24 +130,24 @@ async function handleExcelFile(file) {
 
 // ===== LOAD =====
 document.addEventListener("DOMContentLoaded", () => {
-    fetchLecturers();
+    fetchCourseClasses();
 
     // SEARCH
-    const search = document.getElementById("search");
+    const search = document.getElementById("searchAcademic");
     if (search) {
         search.addEventListener("input", function () {
-            const k = this.value.toLowerCase();
+            const keyword = this.value.toLowerCase();
 
-            renderTable(lecturers.filter(g =>
-                g.id.toLowerCase().includes(k) ||
-                g.name.toLowerCase().includes(k) ||
-                g.subject.toLowerCase().includes(k) ||
-                g.email.toLowerCase().includes(k)
-            ));
+            const filtered = courseClasses.filter(item =>
+                item.subjectName.toLowerCase().includes(keyword) ||
+                item.teacherName.toLowerCase().includes(keyword) ||
+                item.group.toLowerCase().includes(keyword)
+            );
+            renderTable(filtered);
         });
     }
 
-    // IMPORT
+    // ===== IMPORT BUTTON =====
     const btnImport = document.getElementById("btnImport");
     const fileInput = document.getElementById("excelFile");
 
@@ -147,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
             handleExcelFile(e.target.files[0]);
         });
     }
-
+    
     // ===== DRAG DROP =====
     const uploadBox = document.getElementById("uploadBox");
     if (uploadBox && fileInput) {

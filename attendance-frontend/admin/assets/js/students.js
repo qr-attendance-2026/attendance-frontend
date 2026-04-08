@@ -1,7 +1,42 @@
 // ===== DATA =====
-let students = [
-    { id: "SV01", name: "Nguyễn Văn A", class: "CNTT1", email: "a@gmail.com" }
-];
+let students = [];
+const API_BASE_URL = "https://api-attendance-backend-520975280881.asia-southeast1.run.app/api";
+
+async function fetchStudents() {
+    const token = localStorage.getItem('access_token');
+    if (!token) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/users?role=student`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        if (response.ok) {
+            let users = [];
+            if (Array.isArray(data.data)) {
+                users = data.data; 
+            } else if (data.data && Array.isArray(data.data.data)) {
+                users = data.data.data; 
+            } else if (Array.isArray(data)) {
+                users = data; 
+            }
+
+            const studentUsers = users.filter(u => u.role === 'student' || u.student !== null);
+
+            students = studentUsers.map(u => ({
+                id: u.student && u.student.student_code ? u.student.student_code : u.id,
+                name: u.name,
+                class: u.student && u.student.cohort_class ? u.student.cohort_class : "-",
+                email: u.email
+            }));
+            renderStudents();
+        } else {
+            showToast(data.message || "Không thể lấy dữ liệu sinh viên");
+        }
+    } catch (error) {
+        showToast("Lỗi kết nối");
+    }
+}
 
 let editIndex = null;
 
@@ -118,58 +153,73 @@ function deleteStudent(index) {
 }
 
 // ===== IMPORT EXCEL =====
-function handleExcelFile(file) {
+function closeImport() {
+    const modal = document.getElementById("importModal");
+    if (modal) modal.style.display = "none";
+}
+
+async function handleExcelFile(file) {
     if (!file) return;
 
-    const reader = new FileReader();
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        showToast("Vui lòng đăng nhập");
+        return;
+    }
 
-    reader.onload = function(e) {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
+    const formData = new FormData();
+    formData.append("file", file);
 
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const json = XLSX.utils.sheet_to_json(sheet);
+    showToast("Đang tải lên...");
 
-        let count = 0;
-
-        json.forEach(row => {
-            if (!row.MaSV && !row.id) return;
-
-            students.push({
-                id: row.MaSV || row.id,
-                name: row.Ten || row.name,
-                class: row.Lop || row.class,
-                email: row.Email || "-"
-            });
-
-            count++;
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/import/students`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            },
+            body: formData
         });
 
-        renderStudents();
-        showToast("Import thành công " + count + " dòng");
-    };
-
-    reader.readAsArrayBuffer(file);
+        const data = await response.json();
+        
+        if (response.ok) {
+            showToast(data.message || "Import thành công!");
+            closeImport();
+            fetchStudents(); // Load lại data
+        } else {
+            showToast(data.message || "Import thất bại!");
+        }
+    } catch (error) {
+        console.error(error);
+        showToast("Lỗi kết nối API: " + error.message);
+    }
 }
 
 // ===== LOAD =====
 document.addEventListener("DOMContentLoaded", () => {
-    renderStudents();
+    fetchStudents();
 
     // SEARCH
-    document.getElementById("search").addEventListener("input", function () {
-        const keyword = this.value.toLowerCase();
+    const searchInput = document.getElementById("search");
+    if (searchInput) {
+        searchInput.addEventListener("input", function () {
+            const keyword = this.value.toLowerCase();
 
-        const filtered = students.filter(sv =>
-            sv.id.toLowerCase().includes(keyword) ||
-            sv.name.toLowerCase().includes(keyword) ||
-            sv.class.toLowerCase().includes(keyword)
-        );
+            const filtered = students.filter(sv =>
+                sv.id.toLowerCase().includes(keyword) ||
+                sv.name.toLowerCase().includes(keyword) ||
+                sv.class.toLowerCase().includes(keyword)
+            );
 
-        renderStudents(filtered);
-    });
+            renderStudents(filtered);
+        });
+    }
 
-    document.getElementById("btnAdd").addEventListener("click", addStudent);
+    const btnAdd = document.getElementById("btnAdd");
+    if (btnAdd) {
+        btnAdd.addEventListener("click", addStudent);
+    }
 
     // ===== IMPORT BUTTON =====
     const btnImport = document.getElementById("btnImport");

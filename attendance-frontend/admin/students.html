@@ -17,7 +17,8 @@
         <a href="../admin/index.html">Dashboard</a>
         <a href="../admin/students.html" class="active">Sinh viên</a>
         <a href="../admin/lecturers.html">Giảng viên</a>
-        <a href="../admin/academic.html">Học thuật</a>
+        <a href="../admin/subjects.html">Môn học</a>
+        <a href="../admin/courseclasses.html">Lớp học phần</a>
 
         <a href="../login/login.html" id="logoutBtn" class="logout-btn">🚪 Đăng xuất</a>
     </div>
@@ -29,20 +30,19 @@
             <div>Xin chào, Admin 👋</div>
         </div>
 
+        <input id="search" placeholder="🔍 Tìm kiếm..." class="form-control mb-3">
+        
         <div class="top-actions">
-            <button class="btn btn-success" id="btnAdd">+ Thêm sinh viên</button>
             <button class="btn btn-import" id="btnImport">📥 Import Excel</button>
+            <a href="assets/documents/student_import_template.xlsx" download class="btn btn-secondary" style="margin-left: 10px;">📄 Tải file mẫu</a>
         </div>
 
         <input type="file" id="excelFile" hidden>
-
-        <input id="search" placeholder="🔍 Tìm kiếm..." class="form-control mb-3">
-
         <table class="table" >
             <thead>
                 <tr>
-                    <th>Mã SV</th>
-                    <th>Tên</th>
+                    <th>MSSV</th>
+                    <th>Họ và tên</th>
                     <th>Lớp</th>
                     <th>Email</th>
                     <th></th>
@@ -53,21 +53,6 @@
 
     </div>
 
-    <div id="modal" class="modal">
-        <div class="modal-box">
-            <h3 id="modalTitle">Thêm sinh viên</h3>
-
-            <input id="mssv" placeholder="MSSV">
-            <input id="name" placeholder="Tên">
-            <input id="class" placeholder="Lớp">
-            <input id="email" placeholder="Email">
-
-            <div class="modal-actions">
-                <button class="btn btn-success" onclick="saveStudent()">Lưu</button>
-                <button class="btn btn-danger" onclick="closeModal()">Hủy</button>
-            </div>
-        </div>
-    </div>
 
     <div id="toast" class="toast"></div>
 
