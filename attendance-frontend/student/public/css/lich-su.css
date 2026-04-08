@@ -1,0 +1,36 @@
+.bg-main {
+    background: linear-gradient(135deg, #1e0505 0%, #ebe6e6 50%, #1e0505 100%);
+    min-height: 100vh;
+}
+
+#sidebar-container { width: 260px; min-width: 260px; }
+
+/* Filter & Input */
+.filter-panel { background: rgba(255,255,255,0.05); border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
+.custom-input {
+    background: rgba(0,0,0,0.4) !important;
+    color: #fff !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+}
+.custom-input::placeholder { color: rgba(255,255,255,0.5) !important; }
+.custom-input::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+
+/* Pagination */
+.pagination { display: flex; list-style: none; gap: 5px; padding: 0; margin: 0; }
+.page-link {
+    background: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    color: #ccc !important;
+    padding: 6px 12px;
+    border-radius: 4px !important;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.2s;
+}
+.page-item.active .page-link {
+    border-color: #ff8c00 !important; /* Màu cam giống ảnh mẫu */
+    color: #ff8c00 !important;
+    background: #252525 !important;
+}
+.page-link:hover:not(.disabled) { background: #333 !important; color: #fff !important; }
+.dots { color: #888; padding: 5px; }

@@ -1,0 +1,154 @@
+/* ===== 1. LAYOUT & CHUNG ===== */
+:root {
+    --primary-green: #157347;
+    --primary-green-hover: #105a38;
+    --light-green: #dcfce7;
+    --text-slate: #64748b;
+    --bg-main: #f1f5f9;
+}
+
+.content {
+    margin-left: 240px;
+    padding: 90px 40px;
+    background: var(--bg-main);
+    min-height: 100vh;
+}
+
+.page-title {
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.025em;
+}
+
+.page-subtitle {
+    color: var(--text-slate);
+    font-size: 0.95rem;
+}
+
+/* ===== 2. NÚT BẤM TÙY CHỈNH (GREEN) ===== */
+.btn-green {
+    background-color: var(--primary-green);
+    color: white;
+    border: none;
+    transition: background 0.2s;
+}
+
+.btn-green:hover {
+    background-color: var(--primary-green-hover);
+    color: white;
+}
+
+.btn-outline-green {
+    color: var(--primary-green);
+    border: 1px solid var(--primary-green);
+}
+
+.btn-outline-green:hover {
+    background-color: var(--primary-green);
+    color: white;
+}
+
+.text-green-dark {
+    color: var(--primary-green) !important;
+}
+
+.bg-green {
+    background-color: var(--primary-green) !important;
+}
+
+/* ===== 3. SESSION LIST (SIDEBAR) ===== */
+#sessionList {
+    max-height: calc(100vh - 300px);
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.card-session {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 18px 20px;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.card-session:hover {
+    border-color: var(--primary-green);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(21, 115, 71, 0.1);
+}
+
+.card-session.active {
+    background: #f0fdf4; /* Light green tint */
+    border-color: var(--primary-green);
+    box-shadow: 0 4px 8px rgba(21, 115, 71, 0.05);
+}
+
+.badge-green-light {
+    background: var(--light-green);
+    color: var(--primary-green);
+    font-weight: 700;
+}
+.hover-card {
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent !important;
+}
+.hover-card:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+    transition: all 0.2s ease;
+    border: 1px solid #198754 !important;
+}
+/* ===== 4. TABLE & QUICK VIEW ===== */
+.table thead th {
+    background: #f8fafc;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-slate);
+    padding: 15px 20px;
+}
+
+.status-ok {
+    background: var(--light-green);
+    color: var(--primary-green);
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-late {
+    background: #fee2e2;
+    color: #dc2626;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.stat-mini {
+    font-size: 0.75rem;
+    color: var(--text-slate);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: bold;
+}
+
+/* ===== 5. CUSTOM SCROLLBAR ===== */
+#sessionList::-webkit-scrollbar {
+    width: 5px;
+}
+
+#sessionList::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+#sessionList::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-green);
+}

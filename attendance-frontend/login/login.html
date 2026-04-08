@@ -7,8 +7,6 @@
     <title>QR Attendance STU Premium</title>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <!-- BA fix -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
         :root {
             --primary: #d32f2f;
@@ -34,6 +32,7 @@
             overflow: hidden;
         }
 
+        /* CONTAINER CHÍNH */
         .container {
             width: 95%;
             max-width: 1400px;
@@ -70,7 +69,7 @@
         .bg-img {
             width: 100%;
             height: 100%;
-            background: url('/attendance-frontend/login/imagine/bacrao.jpg') center/cover no-repeat;
+            background: url('imagine/bacrao.jpg') center/cover no-repeat;
             transition: transform 12s linear;
             transform: scale(1.1);
         }
@@ -305,8 +304,7 @@
         <div class="overlay"></div>
 
         <nav class="nav">
-            <img src="/attendance-frontend/login/imagine/Logo_STU.png" alt="" height="55"
-                onerror="this.style.display='none'">
+            <img src="imagine/Logo_STU.png" alt="" height="55" onerror="this.style.display='none'">
             <span class="logo-text">STU PREMIUM</span>
         </nav>
 
@@ -334,84 +332,126 @@
         <button class="login-btn" onclick="login()">BẮT ĐẦU TRUY CẬP</button>
     </div>
 
+    <script>
+        const loginBox = document.getElementById("loginBox");
+        const mainContent = document.getElementById("main");
+        const toast = document.getElementById("toast");
 
-
-    <!--  BA fix full Script -->
-    <script type="module">
-        import { authService } from './attendance-frontend/teacher/services/authService.js';
-        const DOM = {
-            loginBox: document.getElementById("loginBox"),
-            mainContent: document.getElementById("main"),
-            mssvInput: document.getElementById("mssv"),
-            passInput: document.getElementById("pass")
-        };
-
-        const PATHS = {
-            teacher: "./attendance-frontend/teacher/teacher-dashboard.html",
-            student: "./attendance-frontend/student/student-profile.html",
-            admin: "./attendance-frontend/admin/index.html"
-        };
-
-
-        window.toggleLoginModal = (isOpen = true) => {
-            const method = isOpen ? 'add' : 'remove';
-            DOM.loginBox.classList[method]("active");
-            DOM.mainContent.classList[method]("is-blurred");
-        };
-
-        window.openLogin = () => window.toggleLoginModal(true);
-        window.closeLogin = () => window.toggleLoginModal(false);
-
-        window.handleForgot = () => alert("Vui lòng liên hệ phòng đào tạo để cấp lại mật khẩu!");
-
-
-        window.login = async () => {
-            const email = DOM.mssvInput.value.trim();
-            const password = DOM.passInput.value.trim();
-
-            if (!email || !password) {
-                return alert("Vui lòng nhập đầy đủ thông tin!");
-            }
-
-           try {
-        console.log("🚀 Đang gửi yêu cầu đăng nhập...");
-        const response = await authService.login(email, password);
-        const { data: backendData } = response;
-
-        if (backendData?.user?.role) {
-            // LẤY THÊM BIẾN name TỪ backendData.user
-            const { role, id, name } = backendData.user; 
-            const { token } = backendData;
-
-            console.log(`✅ Đăng nhập thành công | User: ${name}`);
-
-            if (token) {
-                localStorage.setItem('token', token);
-                localStorage.setItem('access_token', token);
-            }
-
-            localStorage.setItem('user_id', id);
-            localStorage.setItem('user_role', role);
-            
-            // LƯU TÊN VÀO LOCALSTORAGE
-            // Nếu name tồn tại thì lưu, không thì dùng mặc định để tránh lỗi undefined
-            localStorage.setItem('teacher_name', name || "Giảng viên");
-
-            if (PATHS[role]) {
-                window.location.href = PATHS[role];
-            } else {
-                alert("Quyền truy cập không hợp lệ: " + role);
-            }
-        } else {
-            throw new Error("Không tìm thấy thông tin quyền hạn!");
+        function showToast(msg) {
+            toast.innerText = msg;
+            toast.classList.add("show");
+            setTimeout(() => toast.classList.remove("show"), 3500);
         }
-    } catch (error) {
-                console.error("❌ Lỗi đăng nhập:", error);
-                const errorMsg = error.response?.data?.message || error.message || "Đăng nhập thất bại!";
-                alert(errorMsg);
+
+        function openLogin() {
+            loginBox.classList.add("active");
+            mainContent.classList.add("is-blurred");
+        }
+
+        function closeLogin() {
+            loginBox.classList.remove("active");
+            mainContent.classList.remove("is-blurred");
+        }
+
+        function handleForgot() {
+            showToast("⚠️ Vui lòng liên hệ trực tiếp Phòng Đào Tạo để được hỗ trợ cấp lại.");
+        }
+
+        // Đóng popup khi click ra ngoài
+        window.onclick = function (event) {
+            if (event.target == document.body && loginBox.classList.contains("active")) {
+                closeLogin();
             }
-        };
+        }
+
+        const API_URL = "https://api-attendance-backend-520975280881.asia-southeast1.run.app/api";
+        async function login() {
+            const mssv = document.getElementById("mssv").value.trim();
+            const pass = document.getElementById("pass").value.trim();
+
+            if (!mssv || !pass) {
+                showToast(" 🙅‍♂️ Vui lòng không để trống thông tin!");
+                return;
+            }
+
+            // 1. Xử lý thông minh: Nếu user chỉ nhập MSSV (VD: DH52201607), tự động nối đuôi email trường.
+            // Nếu họ có gõ sẵn @ (ví dụ GV hoặc Admin dùng email khác) thì giữ nguyên.
+            let loginEmail = mssv;
+            if (!loginEmail.includes('@')) {
+                loginEmail = loginEmail.toLowerCase() + '@student.stu.edu.vn';
+            }
+
+            const btn = document.querySelector(".login-btn");
+            const originalText = btn.innerText;
+
+            // Đổi UI sang trạng thái loading
+            btn.innerText = "ĐANG XÁC THỰC...";
+            btn.style.background = "#444";
+            btn.disabled = true;
+
+            try {
+                // 2. Gọi API Login
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json' // Bắt buộc để Laravel trả về JSON khi có lỗi thay vì chuyển trang
+                    },
+                    body: JSON.stringify({
+                        email: loginEmail,
+                        password: pass
+                    })
+                });
+
+                const data = await response.json();
+
+                // 3. Xử lý kết quả trả về
+                if (response.ok && data.success) {
+                    showToast("✓ Đăng nhập thành công!");
+
+                    // QUAN TRỌNG: Lưu Bearer Token và User Info vào bộ nhớ trình duyệt
+                    localStorage.setItem('access_token', data.data.token);
+                    localStorage.setItem('user_info', JSON.stringify(data.data.user));
+
+                    // Chuyển hướng theo Role (Phân quyền)
+                    setTimeout(() => {
+                        const role = data.data.user.role;
+                        if (role === 'student') {
+                            window.location.href = "../student/views/sinh-vien/ho-so.html";
+                        } else if (role === 'teacher') {
+                            window.location.href = "../teacher/teacher-dashboard.html"; // Redirect to specific teacher dashboard
+                        } else {
+                            window.location.href = "../admin/index.html"; // Redirect to real admin page
+                        }
+                    }, 800);
+
+                } else {
+                    // Xử lý lỗi (Sai pass, tài khoản không tồn tại...)
+                    let errorMsg = data.message || "Đăng nhập thất bại!";
+
+                    // Laravel Validation lỗi thường nằm trong mảng errors
+                    if (data.errors && data.errors.email) {
+                        errorMsg = data.errors.email[0];
+                    }
+
+                    showToast("❌ " + errorMsg);
+
+                    // Reset lại nút bấm
+                    btn.innerText = originalText;
+                    btn.style.background = ""; // Trả về CSS gốc
+                    btn.disabled = false;
+                }
+
+            } catch (error) {
+                console.error("Lỗi kết nối:", error);
+                showToast("❌ Lỗi kết nối đến máy chủ! Vui lòng thử lại sau.");
+                btn.innerText = originalText;
+                btn.style.background = "";
+                btn.disabled = false;
+            }
+        }
     </script>
+
 </body>
 
 </html>
