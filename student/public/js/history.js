@@ -1,96 +1,64 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // 1. Load Sidebar
+    const API_URL = "https://api-attendance-backend-520975280881.asia-southeast1.run.app/api";
+    const token = localStorage.getItem("token");
+
+    // 1. Tải Sidebar
     fetch("../layout/sidebar.html").then(res => res.text()).then(data => {
         document.getElementById("sidebar-container").innerHTML = data;
+        const current = window.location.pathname;
+        document.querySelectorAll(".menu-item").forEach(link => {
+            if (link.getAttribute("href") && current.includes(link.getAttribute("href"))) link.classList.add("active");
+        });
     });
 
-    // 2. Data mẫu (30 dòng)
-    const mockData = [];
-    for (let i = 1; i <= 30; i++) {
-        mockData.push({
-            ngay: `${i.toString().padStart(2, '0')}/03/2026`,
-            mon: i % 2 === 0 ? "Lập trình Web" : "Cơ sở dữ liệu",
-            lop: "D22_TH08",
-            gv: "TS. Nguyễn Văn A",
-            ca: `Ca ${(i % 4) + 1}`,
-            gio: `0${7 + (i % 2)}:15`
+    // 2. API Summary (Thanh phần trăm)
+    async function fetchSummary() {
+        const res = await fetch(`${API_URL}/student/attendance/summary`, {
+            headers: { "Authorization": "Bearer " + token }
         });
-    }
-
-    let filteredData = [...mockData];
-    let currentPage = 1;
-    const limit = 5;
-
-    window.renderTable = function() {
-        const start = (currentPage - 1) * limit;
-        const currentData = filteredData.slice(start, start + limit);
-
-        document.getElementById("attendanceTable").innerHTML = currentData.map(item => `
-            <tr>
-                <td class="ps-4 fw-bold text-info">${item.ngay}</td>
-                <td><div class="fw-bold">${item.mon}</div><div class="small text-white-50">${item.lop}</div></td>
-                <td><span class="badge bg-danger">${item.ca}</span></td>
-                <td>${item.gv}</td>
-                <td class="text-center fw-bold text-success">${item.gio}</td>
-            </tr>
-        `).join('');
-
-        document.getElementById("showingResult").innerText = `Đang hiện ${start + 1} - ${Math.min(start + limit, filteredData.length)} trên ${filteredData.length} kết quả`;
-        renderPagination();
-    }
-
-    // 3. Logic Phân Trang Theo Yêu Cầu
-    function renderPagination() {
-        const totalPage = Math.ceil(filteredData.length / limit);
-        let pgHtml = `<ul class="pagination">`;
-
-        // CHỈ HIỆN nút "Đầu" và "Trước" khi ở trang 2 trở đi
-        if (currentPage > 1) {
-            pgHtml += `<li class="page-item"><a class="page-link" href="javascript:setPage(1)">« Đầu</a></li>`;
-            pgHtml += `<li class="page-item"><a class="page-link" href="javascript:setPage(${currentPage - 1})">‹</a></li>`;
-        }
-
-        // Các số trang và dấu ...
-        if (totalPage <= 5) {
-            for (let i = 1; i <= totalPage; i++) pgHtml += addPageItem(i);
-        } else {
-            pgHtml += addPageItem(1);
-            if (currentPage > 3) pgHtml += `<li class="dots">...</li>`;
+        if (res.ok) {
+            const result = await res.json();
+            const box = document.getElementById("summaryBox");
+            if (!box || !result.data) return;
             
-            let start = Math.max(2, currentPage - 1);
-            let end = Math.min(totalPage - 1, currentPage + 1);
-            
-            if (currentPage <= 3) end = 4;
-            if (currentPage >= totalPage - 2) start = totalPage - 3;
-
-            for (let i = start; i <= end; i++) pgHtml += addPageItem(i);
-
-            if (currentPage < totalPage - 2) pgHtml += `<li class="dots">...</li>`;
-            pgHtml += addPageItem(totalPage);
+            box.innerHTML = result.data.map(item => {
+                const rate = item.rate || 0;
+                let color = rate < 50 ? "bg-danger" : (rate < 80 ? "bg-warning" : "bg-success");
+                return `
+                <div class="col-md-4 mb-3">
+                    <div class="card-summary p-3 h-100" style="background: rgba(255,255,255,0.05); border-radius: 15px;">
+                        <h6 class="text-info fw-bold">${item.subject_name}</h6>
+                        <div class="d-flex justify-content-between small mt-3"><span>Tỷ lệ đi học</span><b>${rate}%</b></div>
+                        <div class="progress mt-1" style="height: 6px;"><div class="progress-bar ${color}" style="width: ${rate}%"></div></div>
+                        <div class="mt-3 small d-flex justify-content-between">
+                            <span class="text-success">✅ Có mặt: ${item.present}</span><span class="text-danger">❌ Vắng: ${item.absent}</span>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
         }
-
-        // CHỈ HIỆN nút "Sau" và "Cuối" khi chưa tới trang cuối
-        if (currentPage < totalPage) {
-            pgHtml += `<li class="page-item"><a class="page-link" href="javascript:setPage(${currentPage + 1})">›</a></li>`;
-            pgHtml += `<li class="page-item"><a class="page-link" href="javascript:setPage(${totalPage})">Cuối »</a></li>`;
-        }
-
-        pgHtml += `</ul>`;
-        document.getElementById("paginationBox").innerHTML = pgHtml;
     }
 
-    function addPageItem(i) {
-        return `<li class="page-item ${i === currentPage ? 'active' : ''}">
-                <a class="page-link" href="javascript:setPage(${i})">${i}</a></li>`;
+    // 3. API Bảng lịch sử
+    async function fetchHistoryTable() {
+        const res = await fetch(`${API_URL}/student/attendance`, {
+            headers: { "Authorization": "Bearer " + token }
+        });
+        if (res.ok) {
+            const result = await res.json();
+            const raw = result.data?.data || result.data || [];
+            const tbody = document.getElementById("attendanceTable");
+            tbody.innerHTML = raw.map(item => `
+                <tr>
+                    <td class="ps-4 fw-bold text-info">${item.checked_at ? item.checked_at.split('T')[0] : 'N/A'}</td>
+                    <td><div class="fw-bold">${item.session?.course_class?.subject?.subject_name || "Môn học"}</div></td>
+                    <td>Ca ${item.session?.check_number || 1}</td>
+                    <td>${item.session?.course_class?.teacher?.user?.name || "Giảng viên"}</td>
+                    <td class="text-center"><span class="badge ${item.status === 'present' ? 'bg-success' : 'bg-danger'}">${item.status === 'present' ? 'Có mặt' : 'Vắng'}</span></td>
+                </tr>`).join('');
+        }
     }
 
-    window.setPage = (p) => { currentPage = p; renderTable(); };
-    window.filterData = () => {
-        const s = document.getElementById("searchInput").value.toLowerCase();
-        filteredData = mockData.filter(item => item.mon.toLowerCase().includes(s));
-        currentPage = 1;
-        renderTable();
-    };
-
-    renderTable();
+    fetchSummary();
+    fetchHistoryTable();
 });

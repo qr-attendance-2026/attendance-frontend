@@ -70,11 +70,8 @@
             background: linear-gradient(to bottom, #fff, #999);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
         }
         
-
         .content p {
             font-size: 1.15rem; line-height: 1.8; margin-bottom: 45px;
             opacity: 0.8; max-width: 550px; font-weight: 300;
@@ -145,7 +142,6 @@
         /* BLUR EFFECT */
         .blur-target { transition: 0.8s var(--transition); }
         .is-blurred { filter: blur(20px) brightness(0.6) scale(0.98); }
-
     </style>
 </head>
 <body>
@@ -175,7 +171,7 @@
     <h2>Đăng Nhập</h2>
     
     <div class="input-group">
-        <input type="text" id="mssv" placeholder="Mã số sinh viên">
+        <input type="text" id="email" placeholder="Email (VD: mssv@stu.edu.vn)">
     </div>
     <div class="input-group">
         <input type="password" id="pass" placeholder="Mật khẩu">
@@ -191,18 +187,20 @@
     const mainContent = document.getElementById("main");
     const toast = document.getElementById("toast");
 
+    // 1. HÀM HIỂN THỊ THÔNG BÁO (TOAST)
     function showToast(msg) {
         toast.innerText = msg;
         toast.classList.add("show");
         setTimeout(() => toast.classList.remove("show"), 3500);
     }
 
-    function openLogin(){
+    // 2. HÀM MỞ/ĐÓNG POPUP ĐĂNG NHẬP
+    function openLogin() {
         loginBox.classList.add("active");
         mainContent.classList.add("is-blurred");
     }
 
-    function closeLogin(){
+    function closeLogin() {
         loginBox.classList.remove("active");
         mainContent.classList.remove("is-blurred");
     }
@@ -218,26 +216,83 @@
         }
     }
 
-    function login(){
-        const mssv = document.getElementById("mssv").value.trim();
-        const pass = document.getElementById("pass").value.trim();
+    // 3. HÀM XỬ LÝ ĐĂNG NHẬP (GỌI API THẬT)
+    function login() {
+        const emailInput = document.getElementById("email").value.trim();
+        const passInput = document.getElementById("pass").value.trim();
 
-        if(!mssv || !pass){
-            showToast(" 🙅‍♂️ Vui lòng không để trống thông tin!");
+        if (!emailInput || !passInput) {
+            showToast("🙅‍♂️ Vui lòng nhập đầy đủ Email và Mật khẩu!");
             return;
         }
 
+        // Đổi trạng thái nút
         const btn = document.querySelector(".login-btn");
+        const originalText = btn.innerText;
         btn.innerText = "ĐANG XÁC THỰC...";
         btn.style.background = "#444";
+        btn.disabled = true;
 
-        setTimeout(() => {
-            showToast("✓ Đăng nhập thành công!");
+        // Gọi API Login
+        fetch("http://127.0.0.1:8000/api/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({
+                email: emailInput,
+                password: passInput
+            })
+        })
+        .then(async res => {
+            const data = await res.json();
+            
+            // Nếu lỗi (Sai pass, email không tồn tại...)
+            if (!res.ok) {
+                throw new Error(data.message || "Sai tài khoản hoặc mật khẩu!");
+            }
+            return data;
+        })
+        .then(data => {
+            console.log("LOGIN DATA:", data);
+
+            // ⚠️ FIX: Trỏ chính xác vào lớp data bên trong để lấy token
+            const token = data.data ? data.data.token : null;
+
+            if (!token) {
+                throw new Error("Lỗi: Server không trả về mã xác thực!");
+            }
+
+            // Lưu Token vào localStorage
+            localStorage.setItem("token", token);
+            
+            showToast("✅ Đăng nhập thành công!");
+
+            // Chuyển hướng sang trang Profile / Home
             setTimeout(() => {
-                window.location.href = "../student/views/student/profile.html";
+                window.location.href = "../student/views/student/profile.html"; 
             }, 800);
-        }, 1200);
+        })
+        .catch(err => {
+            console.error("LỖI LOGIN:", err);
+            showToast("❌ " + err.message);
+        })
+        .finally(() => {
+            // Reset lại nút bấm
+            btn.innerText = originalText;
+            btn.style.background = "var(--text-dark)";
+            btn.disabled = false;
+        });
     }
+
+    // Bắt sự kiện nhấn Enter để đăng nhập cho tiện lợi
+    document.getElementById("pass").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            login();
+        }
+    });
 </script>
 
 </body>

@@ -1,39 +1,64 @@
-const form = document.getElementById("formDangNhap");
-const mssvInput = document.getElementById("mssv");
-const error = document.getElementById("errorMssv");
+function login(){
+    const email = document.getElementById("email").value.trim();
+    const pass = document.getElementById("pass").value.trim();
 
-// validate + login
-form.addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    const mssv = mssvInput.value.trim();
-    const regex = /^[a-zA-Z0-9]+$/;
-
-    if (!regex.test(mssv)) {
-        error.classList.remove("d-none");
-        mssvInput.classList.add("is-invalid");
+    if(!email || !pass){
+        showToast("🙅‍♂️ Không được để trống!");
         return;
     }
 
-    error.classList.add("d-none");
-    mssvInput.classList.remove("is-invalid");
+    const btn = document.querySelector(".login-btn");
+    btn.innerText = "ĐANG XÁC THỰC...";
+    btn.style.background = "#444";
 
-    const btn = document.querySelector(".btn-login");
-    btn.innerText = "Đang đăng nhập...";
-    btn.disabled = true;
+    fetch("http://127.0.0.1:8000/api/auth/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify({
+            email: email,
+            password: pass
+        })
+    })
 
-    setTimeout(() => {
-        btn.innerText = "Đăng nhập";
-        btn.disabled = false;
+    .then(async res => {
+        const data = await res.json();
 
-        window.location.href = "../student/home.html";
-    }, 1200);
-});
+        if (!res.ok) {
+            throw new Error(data.message || "Login fail");
+        }
 
-// popup quên mật khẩu
-document.getElementById("quenMatKhau").addEventListener("click", function(e){
-    e.preventDefault();
+        return data;
+    })
 
-    const modal = new bootstrap.Modal(document.getElementById('modalQuenMK'));
-    modal.show();
-});
+    .then(data => {
+        console.log("LOGIN DATA:", data);
+
+        const token = data.token || data.access_token;
+
+        if(!token){
+            showToast("❌ Không có token");
+            return;
+        }
+
+        localStorage.setItem("token", token);
+
+        showToast("✅ Đăng nhập thành công!");
+
+        setTimeout(() => {
+            window.location.href = "../student/views/student/profile.html";
+        }, 800);
+    })
+
+    .catch(err => {
+        console.error("LỖI:", err);
+        showToast("❌ Không kết nối được backend");
+    })
+
+    .finally(() => {
+        btn.innerText = "BẮT ĐẦU TRUY CẬP";
+        btn.style.background = "#1a1a1a";
+    });
+}

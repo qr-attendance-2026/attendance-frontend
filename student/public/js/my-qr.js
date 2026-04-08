@@ -1,71 +1,64 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // 1. LOAD SIDEBAR (Giữ nguyên logic gốc của bạn)
-   fetch("../layout/sidebar.html")
-.then(res => res.text())
-.then(data => {
-    document.getElementById("sidebar-container").innerHTML = data;
+document.addEventListener("DOMContentLoaded", async function () {
+    const API_URL = "https://api-attendance-backend-520975280881.asia-southeast1.run.app/api";
+    const token = localStorage.getItem("token");
 
-    // 🔥 FIX ACTIVE MENU
-    const current = window.location.pathname;
+    // 1. LOAD SIDEBAR
+    fetch("../layout/sidebar.html").then(res => res.text()).then(data => {
+        document.getElementById("sidebar-container").innerHTML = data;
+        const current = window.location.pathname;
+        document.querySelectorAll(".menu-item").forEach(link => {
+            const href = link.getAttribute("href");
+            if (href && current.includes(href)) link.classList.add("active");
+        });
+    });
 
-    document.querySelectorAll(".menu-item").forEach(link => {
-        const href = link.getAttribute("href");
+    // 2. LẤY DỮ LIỆU TỪ CLOUD RUN VÀ TẠO QR
+    try {
+        const res = await fetch(`${API_URL}/student/profile`, {
+            headers: { "Authorization": "Bearer " + token }
+        });
+        if (res.ok) {
+            const result = await res.json();
+            const user = result.data;
 
-        if (href && current.includes(href)) {
-            link.classList.add("active");
+            document.getElementById("tenSV").innerText = user.name;
+            document.getElementById("mssv").innerText = user.student_code;
+            document.getElementById("lop").innerText = "Lớp: " + (user.cohort_class || "D22_TH08");
+
+            new QRCode(document.getElementById("qrcode"), {
+                text: user.student_code,
+                width: 220,
+                height: 220,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
         }
-    });
-})
-.catch(err => console.log("Lỗi load sidebar"));
-    // 2. DỮ LIỆU
-    const mssv = "DH52201348";
-    const ten = "Lê Thị Mỹ Quỳnh";
-    const lop = "D22_TH08";
-    
-    document.getElementById("tenSV").innerText = ten;
-    document.getElementById("mssv").innerText = mssv;
-    document.getElementById("lop").innerText = "Lớp: " + lop;
-
-    // 3. TẠO MÃ QR
-    new QRCode(document.getElementById("qrcode"), {
-        text: mssv,
-        width: 220,
-        height: 220,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-    });
+    } catch (err) { console.error("Lỗi:", err); }
 });
 
-// HÀM TẢI TOÀN BỘ KHUNG THẺ
+// HÀM TẢI TOÀN BỘ KHUNG THẺ (CỦA BẠN)
 function downloadFullCard() {
     const card = document.getElementById("capture-area");
-    
-    // Chụp lại vùng thẻ sinh viên
     html2canvas(card, {
-        scale: 2, // Tăng chất lượng ảnh
+        scale: 2, 
         backgroundColor: "#ffffff" 
     }).then(canvas => {
         const link = document.createElement("a");
-        link.download = "The_Sinh_Vien_Quynh.png";
+        link.download = "The_Sinh_Vien_STU.png";
         link.href = canvas.toDataURL("image/png");
         link.click();
     });
 }
 
-// HÀM PHÓNG TO (Dùng lại logic cũ của bạn)
+// HÀM PHÓNG TO (CỦA BẠN)
 function zoomQR() {
     const card = document.getElementById("capture-area");
-
-    // clone lại toàn bộ thẻ (giữ nguyên QR + info)
     const clone = card.cloneNode(true);
-
-    // clear modal
     const zoomBox = document.getElementById("zoomContent");
+    
     zoomBox.innerHTML = "";
     zoomBox.appendChild(clone);
-
-    // scale to đẹp hơn
     clone.style.transform = "scale(1.5)";
     clone.style.transformOrigin = "center";
 
