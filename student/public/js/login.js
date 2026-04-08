@@ -26,7 +26,7 @@ form.addEventListener("submit", function(e) {
         btn.innerText = "Đăng nhập";
         btn.disabled = false;
 
-        window.location.href = "../sinh-vien/trang-chu.html";
+        window.location.href = "../student/home.html";
     }, 1200);
 });
 
