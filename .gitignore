@@ -1,0 +1,4 @@
+.vscode/
+attendance-backend/
+node_modules/
+.env
