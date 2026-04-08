@@ -1,10 +1,10 @@
-/* ===== ROOT VARIABLES ===== */
 :root {
     --primary-green: #157347;
     --primary-green-dark: #146c43;
+    --overlay-bg: rgba(15, 23, 42, 0.8);
+    --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
-/* ===== LAYOUT ===== */
 .main-content {
     margin-left: 240px;
     padding: 80px 30px;
@@ -12,14 +12,13 @@
     min-height: 100vh;
 }
 
-/* ===== QR OVERLAY (MODAL) ===== */
 #qrOverlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(15, 23, 42, 0.8); /* Màu tối sang trọng hơn */
+    background: var(--overlay-bg);
     backdrop-filter: blur(8px);
     z-index: 9999;
     display: none;
@@ -31,28 +30,26 @@
     background: white;
     padding: 2.5rem;
     border-radius: 24px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    
-    /* SỬA TẠI ĐÂY: Tăng max-width để card nở ra theo mã QR 450px */
-    max-width: 550px;
-
-@keyframes zoomIn {
-    from { transform: scale(0.9); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-#qrcode {
-    max-width: 100%; 
-    height: auto !important; /* Quan trọng để giữ tỷ lệ khi scale */
-    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    max-width: 450px;
+    width: 90%;
+    position: relative;
+    animation: zoomIn 0.3s ease-out;
 }
 
 .qrcode-wrapper {
     background: #f8f9fa;
-    padding: 20px; /* Tăng padding nhìn cho thoáng */
+    padding: 20px;
     border-radius: 20px;
     display: inline-block;
     border: 1px solid #e9ecef;
     margin-bottom: 1.5rem;
+}
+
+#qrcode {
+    max-width: 100%;
+    height: auto !important;
+    border-radius: 12px;
 }
 
 .qr-status-badge {
@@ -64,8 +61,8 @@
     font-weight: 700;
 }
 
-/* ===== COMPONENTS ===== */
-.form-control, .form-select {
+.form-control, 
+.form-select {
     border-radius: 10px;
     padding: 10px 15px;
 }
@@ -73,14 +70,34 @@
 .btn {
     border-radius: 10px;
     font-weight: 600;
-    transition: all 0.2s;
+    transition: all 0.2s ease-in-out;
 }
 
 .btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-dark:hover {
+    background-color: #000;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
 }
 
 .table thead {
     border-bottom: 2px solid #f1f5f9;
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
