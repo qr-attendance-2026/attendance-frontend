@@ -40,7 +40,7 @@
             <div class="row">
                 <div class="col-lg-11 mx-auto">
                     <div class="d-flex align-items-center mb-4">
-                        <h5 class="fw-bold mb-0 text-dark">Lộ trình hôm nay</h5>
+                        <h5 class="fw-bold mb-0 text-dark">Danh sách lớp giảng dạy</h5>
                     </div>
                     <div id="schedule-list" class="d-grid gap-3"></div>
                 </div>
@@ -89,52 +89,59 @@
         }
 
         function renderSchedule(classes, container) {
-            if (classes.length === 0) {
-                container.innerHTML = `<div class="text-center py-5"><p>Hôm nay không có lịch dạy.</p></div>`;
-                return;
-            }
+    if (classes.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-5 bg-white rounded-4 shadow-sm">
+                <i class="bi bi-calendar-x text-muted" style="font-size: 3rem;"></i>
+                <p class="mt-3 text-muted">Hôm nay bạn không có lịch dạy.</p>
+            </div>`;
+        return;
+    }
 
-            container.innerHTML = classes.map(item => {
-                const subjectName = item.subject?.subject_name || "Môn học chưa xác định";
-                let roomDisplay = "Chưa xếp phòng";
-
-                if (item.room) {
-                    roomDisplay = item.room.name || item.room.room_code;
-                } else if (item.schedules && item.schedules.length > 0) {
-                    roomDisplay = item.schedules[0].room || item.schedules[0].location || "Phòng B01";
-                }
-
-                return `
-                <div class="card border-0 shadow-sm rounded-4 mb-3">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <div class="badge bg-primary-subtle text-primary mb-2">Lớp: ${item.class_code}</div>
-                                <h5 class="fw-bold mb-1 text-dark">${subjectName}</h5>
-                                
-                                <div class="text-muted small mt-2">
-                                    <span class="me-3">
-                                        <i class="bi bi-geo-alt-fill"></i> 📍 Phòng: 
-                                        <span class="text-dark fw-bold">${roomDisplay}</span>
-                                    </span>
-                                    <span>
-                                        <i class="bi bi-people-fill"></i> 👥 SV: ${item.students?.length || 0}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="text-end">
-                                <button class="btn btn-primary rounded-3 px-4 fw-semibold shadow-sm" 
-                                        onclick="window.location.href='teacher-checkin.html?class_id=${item.id}'">
-                                    Mở điểm danh
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            }).join('');
+    container.innerHTML = classes.map(item => {
+        const subjectName = item.subject?.subject_name || "Môn học chưa xác định";
+        
+        // Xử lý hiển thị phòng học (Không set cứng B01 nữa)
+        let roomDisplay = "Chưa xếp phòng";
+        if (item.room) {
+            roomDisplay = item.room.name || item.room.room_code;
+        } else if (item.schedules?.[0]) {
+            roomDisplay = item.schedules[0].room || item.schedules[0].location || "Chờ cập nhật";
         }
 
+        // Lấy số lượng sinh viên
+        const studentCount = item.students_count || item.students?.length || 0;
+
+        return `
+        <div class="card border-0 shadow-sm rounded-4 mb-3 card-hover">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="badge bg-primary-subtle text-primary mb-2">Mã lớp: ${item.class_code}</div>
+                        <h5 class="fw-bold mb-1 text-dark">${subjectName}</h5>
+                        
+                        <div class="text-muted small mt-2 d-flex gap-3">
+                            <span>
+                                <i class="bi bi-geo-alt-fill text-danger"></i> 
+                                Phòng: <span class="text-dark fw-bold">${roomDisplay}</span>
+                            </span>
+                            <span>
+                                <i class="bi bi-people-fill text-primary"></i> 
+                                Sĩ số: <span class="text-dark fw-bold">${studentCount}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <button class="btn btn-primary rounded-pill px-4 fw-semibold shadow-sm" 
+                                onclick="window.location.href='teacher-checkin.html?class_id=${item.id}'">
+                            <i class="bi bi-qr-code-scan me-2"></i> Điểm danh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
         function updateDateTime() {
             const now = new Date();
             if (document.getElementById('currentTime'))
