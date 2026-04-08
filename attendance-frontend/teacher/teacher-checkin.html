@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Điểm danh - Teacher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/checkin.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <script src="./nav.js"></script>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api-attendance-backend-520975280881.asia-southeast1.run.app https://cdn.jsdelivr.net; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css; font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/fonts/;">
+<script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+
+<body class="bg-light">
+    <div class="main-content">
+        <div class="container-fluid px-4 pt-3">
+            <h5 class="fw-bold mb-3">Điểm danh</h5>
+
+            <div class="card border-0 shadow-sm p-4 mb-4">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold text-muted">Chọn đợt</label>
+                        <select id="filterSemester" class="form-select border-0 bg-light shadow-sm" onchange="filterClasses()">
+                            <option value="2026-2027|2">Học kỳ 2 năm học 2026-2027</option>
+                            <option value="2026-2027|1">Học kỳ 1 năm học 2026-2027</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold text-muted">Ngày điểm danh</label>
+                        <input type="date" id="attendanceDate" class="form-control border-0 bg-light shadow-sm">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold text-muted">Chọn lớp học phần</label>
+                        <select id="course_class_id" class="form-select border-0 bg-light shadow-sm" onchange="loadStudents()">
+                            <option value="">-- Đang tải danh sách lớp --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold text-primary">Lần điểm danh</label>
+                        <input type="number" id="check_number" class="form-control border-0 bg-light shadow-sm text-primary fw-bold" value="1" min="1" max="10">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold text-danger">Thời gian QR (Phút)</label>
+                        <input type="number" id="duration_minutes" class="form-control border-0 bg-light shadow-sm text-danger fw-bold" value="15" min="1" max="120">
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mb-4 align-items-center">
+                <button class="btn btn-danger px-4 py-2 shadow-sm" onclick="generateQR(document.getElementById('check_number').value)">
+                    <i class="bi bi-qr-code me-2"></i>QR điểm danh
+                </button>
+                <button class="btn btn-secondary px-4 py-2 shadow-sm"><i class="bi bi-upc-scan me-2"></i>Quét mã</button>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small">
+                            <tr>
+                                <th class="ps-4" width="40"><input type="checkbox" class="form-check-input"></th>
+                                <th width="60">STT</th>
+                                <th>MSSV</th>
+                                <th>Họ tên</th>
+                                <th class="pe-4">Mã lớp học</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceBody">
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">Vui lòng chọn lớp để xem danh sách</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+<div id="qrOverlay" style="display:none;">
+    <div class="qr-card position-relative"> 
+        <button type="button" 
+                class="btn-close" 
+                onclick="closeQR()" 
+                aria-label="Close"
+                style="position: absolute; top: 20px; right: 20px; z-index: 10; cursor: pointer;">
+        </button>
+
+        <div class="text-center w-100">
+            <div class="qr-status-badge mb-3 d-inline-block">
+                <i class="bi bi-broadcast-pin me-1"></i> Đang phát mã QR
+            </div>
+            <h5 class="fw-bold mb-3">Mã QR Điểm danh</h5>
+            
+            <div class="qrcode-wrapper mb-4">
+                <canvas id="qrcode"></canvas>
+            </div>
+
+            <div class="row g-2">
+                <div class="col-6">
+                    <div class="p-2 border rounded-3 bg-light">
+                        <div class="small text-muted">Lần điểm</div>
+                        <div class="fw-bold h5 mb-0" id="currentCheckNum">1</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="p-2 border rounded-3 bg-light">
+                        <div class="small text-muted">Thời gian còn</div>
+                        <div class="fw-bold h5 mb-0"><span id="displayDuration">15</span>'</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script type="module">
+        import teacherApi from './services/teacherApi.js';
+
+        let allClasses = [];
+        const el = (id) => document.getElementById(id);
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const dateInput = el("attendanceDate");
+            if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+            await initData();
+        });
+
+        async function initData() {
+            try {
+                const response = await teacherApi.getClasses();
+                if (response.success) {
+                    allClasses = response.data;
+                    window.filterClasses();
+                }
+            } catch (err) { console.error("Lỗi:", err); }
+        }
+
+        window.filterClasses = () => {
+            const semesterVal = el("filterSemester").value;
+            const [year, sem] = semesterVal.split('|');
+            const filtered = allClasses.filter(c => c.academic_year == year && c.semester == sem);
+
+            const select = el("course_class_id");
+            if (filtered.length > 0) {
+                select.innerHTML = filtered.map(c => `
+                    <option value="${c.id}">${c.class_code} - ${c.subject?.subject_name || 'Môn học'}</option>
+                `).join('');
+                window.loadStudents();
+            } else {
+                select.innerHTML = '<option value="">Không có lớp học</option>';
+                el("attendanceBody").innerHTML = '<tr><td colspan="5" class="text-center py-4">Dữ liệu trống</td></tr>';
+            }
+        };
+
+        window.loadStudents = () => {
+            const classId = el("course_class_id").value;
+            const selectedClass = allClasses.find(c => c.id == classId);
+            if (selectedClass && selectedClass.students) {
+                el("attendanceBody").innerHTML = selectedClass.students.map((s, i) => `
+                    <tr>
+                        <td class="ps-4"><input type="checkbox" class="form-check-input"></td>
+                        <td>${i + 1}</td>
+                        <td><span class="fw-bold text-dark">${s.student_code}</span></td>
+                        <td>${s.user?.name || 'N/A'}</td>
+                        <td class="text-muted pe-4">${selectedClass.class_code}</td>
+                    </tr>
+                `).join('');
+            }
+        };
+
+        let countdownInterval;
+        window.generateQR = async (checkNumber) => {
+            const classId = el("course_class_id").value;
+            const duration = el("duration_minutes").value;
+            if (!classId) return alert("Vui lòng chọn lớp!");
+
+            try {
+                const res = await teacherApi.createSession({
+                    course_class_id: parseInt(classId),
+                    check_number: parseInt(checkNumber),
+                    duration_minutes: parseInt(duration)
+                });
+
+                if (res.success) {
+                    el("qrOverlay").style.display = "flex";
+                    el("currentCheckNum").innerText = checkNumber;
+                    let timeRemaining = parseInt(duration) * 60;
+                    el("displayDuration").innerText = duration;
+
+                    if (countdownInterval) clearInterval(countdownInterval);
+                    countdownInterval = setInterval(() => {
+                        timeRemaining--;
+                        if (timeRemaining <= 0) {
+                            clearInterval(countdownInterval);
+                            el("displayDuration").innerText = "0";
+                            window.closeQR();
+                        } else {
+                            el("displayDuration").innerText = Math.ceil(timeRemaining / 60);
+                        }
+                    }, 1000);
+
+                    QRCode.toCanvas(el("qrcode"), res.data.qr_payload, { width: 450, margin: 2 });
+                }
+            } catch (err) { alert("Lỗi tạo phiên điểm danh!"); }
+        };
+
+        window.closeQR = () => {
+            el("qrOverlay").style.display = "none";
+            if (countdownInterval) clearInterval(countdownInterval);
+        };
+    </script>
+</body>
+</html>
