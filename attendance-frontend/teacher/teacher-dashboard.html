@@ -52,41 +52,46 @@
         import { dashboardService } from './services/dashboardService.js';
         window.dashboardService = dashboardService;
 
-        async function initDashboard() {
-            const teacherNameElement = document.getElementById('teacherName');
-            const scheduleContainer = document.getElementById('schedule-list');
+async function initDashboard() {
+    const teacherNameElement = document.getElementById('teacherName');
+    const scheduleContainer = document.getElementById('schedule-list');
 
-            const savedName = localStorage.getItem('teacher_name');
-            if (savedName && teacherNameElement) {
-                teacherNameElement.innerText = savedName;
-            }
+    // BƯỚC 1: Hiển thị tên từ localStorage ngay lập tức (Đã lưu từ trang Login)
+    const savedName = localStorage.getItem('teacher_name');
+    if (savedName && teacherNameElement) {
+        teacherNameElement.innerText = savedName; 
+    }
 
-            try {
-                const response = await window.dashboardService.getTeacherStats();
-                console.log("Dữ liệu API trả về:", response);
+    try {
+        // BƯỚC 2: Gọi API lấy danh sách lớp
+        const response = await window.dashboardService.getTeacherStats();
+        console.log("Dữ liệu API trả về:", response);
 
-                const teacherData = response.data?.teacher || response.teacher;
-                if (teacherData && teacherNameElement) {
-                    teacherNameElement.innerText = teacherData.name;
-                    localStorage.setItem('teacher_name', teacherData.name);
-                }
+        // Theo cấu trúc API Laravel của bạn, dữ liệu thường nằm trong response.data
+        const classes = response.data || response;
 
-                const classes = response.data || response;
-
-                if (scheduleContainer) {
-                    renderSchedule(Array.isArray(classes) ? classes : [], scheduleContainer);
-                }
-
-            } catch (error) {
-                console.error("❌ Lỗi tải dữ liệu:", error);
-                if (scheduleContainer) {
-                    scheduleContainer.innerHTML = `
-                    <div class="alert alert-danger rounded-4">
-                        Không thể kết nối máy chủ. Vui lòng thử lại sau.
-                    </div>`;
-                }
-            }
+        // BƯỚC 3: Nếu API có trả về thông tin teacher trong object lớp học, ta cập nhật lại cho chính xác nhất
+        if (Array.isArray(classes) && classes.length > 0 && classes[0].teacher) {
+            const apiTeacherName = classes[0].teacher.name;
+            teacherNameElement.innerText = apiTeacherName;
+            localStorage.setItem('teacher_name', apiTeacherName);
         }
+
+        // BƯỚC 4: Render danh sách lớp
+        if (scheduleContainer) {
+            renderSchedule(Array.isArray(classes) ? classes : [], scheduleContainer);
+        }
+
+    } catch (error) {
+        console.error("❌ Lỗi tải dữ liệu:", error);
+        if (scheduleContainer) {
+            scheduleContainer.innerHTML = `
+            <div class="alert alert-danger rounded-4">
+                Không thể kết nối máy chủ. Vui lòng kiểm tra lại đăng nhập.
+            </div>`;
+        }
+    }
+}
 
         function renderSchedule(classes, container) {
     if (classes.length === 0) {
