@@ -1,14 +1,19 @@
 import apiClient from './apiClient.js';
 
 const teacherApi = {
-    // BỔ SUNG HÀM NÀY
     async getClasses() {
         const response = await apiClient.get('/teacher/course-classes');
-        return response.data; // Đảm bảo trả về đúng cấu trúc { success: true, data: [...] }
+        return response.data;
     },
 
     async createSession(payload) {
         const response = await apiClient.post('/teacher/sessions', payload);
+        return response.data;
+    },
+
+    async checkAttendance(payload) {
+        // payload: course_class_id, student_code, check_number, method
+const response = await apiClient.post('/teacher/attendance/scan', payload);
         return response.data;
     },
 
