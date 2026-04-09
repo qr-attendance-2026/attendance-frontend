@@ -133,7 +133,6 @@
         let allClasses = [];
         let html5QrCode;
         let countdownInterval;
-        let activeSessionId = null; // Biến lưu ID phiên điểm danh hiện tại
         const el = (id) => document.getElementById(id);
 
         // Khởi tạo
@@ -198,7 +197,6 @@
                 });
 
                 if (res.success) {
-                    activeSessionId = res.data.id; // Lưu lại ID phiên vừa tạo
                     el("qrOverlay").style.display = "flex";
                     el("currentCheckNum").innerText = checkNum;
                     let timeRemaining = parseInt(duration) * 60;
@@ -232,29 +230,7 @@
             const config = { fps: 10, qrbox: { width: 250, height: 250 } };
             html5QrCode.start({ facingMode: "environment" }, config, async (decodedText) => {
                 await window.closeScanner();
-                
-                try {
-                    if (!activeSessionId) {
-                        return alert("⚠️ Vui lòng bấm 'Phát QR' để mở phiên điểm danh trước khi quét mã sinh viên!");
-                    }
-
-                    const studentData = JSON.parse(decodedText);
-                    const studentCode = studentData.student_code || decodedText; // Dự phòng nếu QR chỉ chứa code
-
-                    const res = await teacherApi.scanStudentQR({
-                        session_id: activeSessionId,
-                        student_code: studentCode
-                    });
-
-                    if (res.success) {
-                        alert(`✅ ${res.message}\n${res.data.name} (${res.data.student_code})`);
-                        window.loadStudents(); 
-                    } else {
-                        alert("❌ Lỗi: " + (res.message || "Không thể ghi nhận điểm danh"));
-                    }
-                } catch (e) {
-                    alert("⚠️ Lỗi xử lý mã QR: " + e.message);
-                }
+                alert("Đã nhận diện SV: " + decodedText);
             }).catch(err => {
                 alert("Lỗi camera: " + err);
                 window.closeScanner();
