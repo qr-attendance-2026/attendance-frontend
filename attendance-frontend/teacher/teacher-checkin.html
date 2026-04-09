@@ -133,6 +133,7 @@
         let allClasses = [];
         let html5QrCode;
         let countdownInterval;
+        let activeSessionId = null; // Biến lưu ID phiên điểm danh hiện tại
         const el = (id) => document.getElementById(id);
 
         // Khởi tạo
@@ -197,6 +198,7 @@
                 });
 
                 if (res.success) {
+                    activeSessionId = res.data.id; // Lưu lại ID phiên vừa tạo
                     el("qrOverlay").style.display = "flex";
                     el("currentCheckNum").innerText = checkNum;
                     let timeRemaining = parseInt(duration) * 60;
@@ -232,29 +234,23 @@
                 await window.closeScanner();
                 
                 try {
+                    if (!activeSessionId) {
+                        return alert("⚠️ Vui lòng bấm 'Phát QR' để mở phiên điểm danh trước khi quét mã sinh viên!");
+                    }
+
                     const studentData = JSON.parse(decodedText);
-                    const classId = el("course_class_id").value;
-                    const checkNum = el("check_number").value;
-                    const attDate = el("attendanceDate").value;
+                    const studentCode = studentData.student_code || decodedText; // Dự phòng nếu QR chỉ chứa code
 
-                    if (!classId) return alert("Vui lòng chọn lớp học trước khi quét!");
+                    const res = await teacherApi.scanStudentQR({
+                        session_id: activeSessionId,
+                        student_code: studentCode
+                    });
 
-                    if (studentData.type === 'student' && studentData.student_code) {
-                        const res = await teacherApi.submitAttendance({
-                            student_code: studentData.student_code,
-                            course_class_id: parseInt(classId),
-                            check_number: parseInt(checkNum),
-                            attendance_date: attDate
-                        });
-
-                        if (res.success) {
-                            alert(`✅ Điểm danh thành công:\nSV: ${studentData.name}\nMSSV: ${studentData.student_code}`);
-                            window.loadStudents(); 
-                        } else {
-                            alert("❌ Lỗi: " + (res.message || "Không thể ghi nhận điểm danh"));
-                        }
+                    if (res.success) {
+                        alert(`✅ ${res.message}\n${res.data.name} (${res.data.student_code})`);
+                        window.loadStudents(); 
                     } else {
-                        alert("⚠️ Mã QR không đúng định dạng sinh viên!");
+                        alert("❌ Lỗi: " + (res.message || "Không thể ghi nhận điểm danh"));
                     }
                 } catch (e) {
                     alert("⚠️ Lỗi xử lý mã QR: " + e.message);

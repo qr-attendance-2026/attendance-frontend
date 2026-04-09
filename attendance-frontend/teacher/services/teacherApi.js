@@ -16,13 +16,9 @@ const teacherApi = {
         const response = await apiClient.get(`/teacher/sessions/${sessionId}/live`);
         return response.data;
     },
-    async getStudentAttendance(studentId) {
-        const response = await apiClient.get(`/teacher/students/${studentId}/attendance`);
-        return response.data;
-    },
-    async submitAttendance(payload) {
-        // payload: { student_code, course_class_id, attendance_date, check_number }
-        const response = await apiClient.post('/teacher/attendance/check-in', payload);
+    async scanStudentQR(payload) {
+        // payload: { session_id, student_code }
+        const response = await apiClient.post('/teacher/attendance/scan', payload);
         return response.data;
     }
 };
