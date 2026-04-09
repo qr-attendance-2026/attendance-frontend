@@ -291,82 +291,88 @@
         .is-blurred {
             filter: blur(20px) brightness(0.6) scale(0.98);
         }
+
         /* RESPONSIVE CHO DIEN THOAI */
-@media (max-width: 992px) {
-    .container {
-        flex-direction: column;
-        height: 100vh; /* Full màn hình trên mobile */
-        width: 100%;
-        border-radius: 0; /* Bỏ bo góc để tràn viền điện thoại */
-    }
+        @media (max-width: 992px) {
+            .container {
+                flex-direction: column;
+                height: 100vh;
+                /* Full màn hình trên mobile */
+                width: 100%;
+                border-radius: 0;
+                /* Bỏ bo góc để tràn viền điện thoại */
+            }
 
-    .nav {
-        left: 20px;
-        top: 20px;
-    }
+            .nav {
+                left: 20px;
+                top: 20px;
+            }
 
-    .nav img {
-        height: 40px;
-    }
+            .nav img {
+                height: 40px;
+            }
 
-    .logo-text {
-        font-size: 20px;
-    }
+            .logo-text {
+                font-size: 20px;
+            }
 
-    .content {
-        width: 100%;
-        padding: 0 30px;
-        text-align: center;
-        align-items: center;
-    }
+            .content {
+                width: 100%;
+                padding: 0 30px;
+                text-align: center;
+                align-items: center;
+            }
 
-    .content h1 {
-        font-size: 3.5rem; /* Thu nhỏ tiêu đề */
-        margin-bottom: 15px;
-    }
+            .content h1 {
+                font-size: 3.5rem;
+                /* Thu nhỏ tiêu đề */
+                margin-bottom: 15px;
+            }
 
-    .content p {
-        font-size: 1rem;
-        margin-bottom: 30px;
-    }
+            .content p {
+                font-size: 1rem;
+                margin-bottom: 30px;
+            }
 
-    .btn-main {
-        padding: 18px 40px;
-        width: 100%; /* Nút bấm full chiều ngang trên mobile */
-        max-width: 300px;
-    }
+            .btn-main {
+                padding: 18px 40px;
+                width: 100%;
+                /* Nút bấm full chiều ngang trên mobile */
+                max-width: 300px;
+            }
 
-    .login-box {
-        width: 
-        padding: 40px 25px;
-        border-radius: 30px;
-    }
+            .login-box {
+                width: 340px;
+                padding: 40px 25px;
+                border-radius: 30px;
+            }
 
-    .login-box h2 {
-        font-size: 24px;
-        margin-bottom: 25px;
-    }
+            .login-box h2 {
+                font-size: 24px;
+                margin-bottom: 25px;
+            }
 
-    .input-group input {
-        padding: 15px 20px;
-    }
+            .input-group input {
+                padding: 15px 20px;
+            }
 
-    .close-btn {
-        top: 20px;
-        right: 25px;
-    }
-}
+            .close-btn {
+                top: 20px;
+                right: 25px;
+            }
+        }
 
-/* Fix cho các màn hình cực nhỏ (iPhone SE,...) */
-@media (max-width: 380px) {
-    .content h1 {
-        font-size: 2.8rem;
-    }
-    
-    .logo-text {
-        display: none; /* Ẩn chữ STU Premium để nhường chỗ cho logo */
-    }
-}
+        /* Fix cho các màn hình cực nhỏ (iPhone SE,...) */
+        @media (max-width: 380px) {
+            .content h1 {
+                font-size: 2.8rem;
+            }
+
+            .logo-text {
+                display: none;
+                /* Ẩn chữ STU Premium để nhường chỗ cho logo */
+            }
+        }
     </style>
 </head>
 
@@ -399,7 +405,7 @@
         <h2>Đăng Nhập</h2>
 
         <div class="input-group">
-            <input type="text" id="mssv" placeholder="Mã số sinh viên">
+            <input type="text" id="mssv" placeholder="Email">
         </div>
         <div class="input-group">
             <input type="password" id="pass" placeholder="Mật khẩu">
@@ -449,39 +455,39 @@
                 return alert("Vui lòng nhập đầy đủ thông tin!");
             }
 
-           try {
-        console.log("🚀 Đang gửi yêu cầu đăng nhập...");
-        const response = await authService.login(email, password);
-        const { data: backendData } = response;
+            try {
+                console.log("🚀 Đang gửi yêu cầu đăng nhập...");
+                const response = await authService.login(email, password);
+                const { data: backendData } = response;
 
-        if (backendData?.user?.role) {
-            // LẤY THÊM BIẾN name TỪ backendData.user
-            const { role, id, name } = backendData.user; 
-            const { token } = backendData;
+                if (backendData?.user?.role) {
+                    // LẤY THÊM BIẾN name TỪ backendData.user
+                    const { role, id, name } = backendData.user;
+                    const { token } = backendData;
 
-            console.log(`✅ Đăng nhập thành công | User: ${name}`);
+                    console.log(`✅ Đăng nhập thành công | User: ${name}`);
 
-            if (token) {
-                localStorage.setItem('token', token);
-                localStorage.setItem('access_token', token);
-            }
+                    if (token) {
+                        localStorage.setItem('token', token);
+                        localStorage.setItem('access_token', token);
+                    }
 
-            localStorage.setItem('user_id', id);
-            localStorage.setItem('user_role', role);
-            
-            // LƯU TÊN VÀO LOCALSTORAGE
-            // Nếu name tồn tại thì lưu, không thì dùng mặc định để tránh lỗi undefined
-            localStorage.setItem('teacher_name', name || "Giảng viên");
+                    localStorage.setItem('user_id', id);
+                    localStorage.setItem('user_role', role);
 
-            if (PATHS[role]) {
-                window.location.href = PATHS[role];
-            } else {
-                alert("Quyền truy cập không hợp lệ: " + role);
-            }
-        } else {
-            throw new Error("Không tìm thấy thông tin quyền hạn!");
-        }
-    } catch (error) {
+                    // LƯU TÊN VÀO LOCALSTORAGE
+                    // Nếu name tồn tại thì lưu, không thì dùng mặc định để tránh lỗi undefined
+                    localStorage.setItem('teacher_name', name || "Giảng viên");
+
+                    if (PATHS[role]) {
+                        window.location.href = PATHS[role];
+                    } else {
+                        alert("Quyền truy cập không hợp lệ: " + role);
+                    }
+                } else {
+                    throw new Error("Không tìm thấy thông tin quyền hạn!");
+                }
+            } catch (error) {
                 console.error("❌ Lỗi đăng nhập:", error);
                 const errorMsg = error.response?.data?.message || error.message || "Đăng nhập thất bại!";
                 alert(errorMsg);

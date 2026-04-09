@@ -184,7 +184,6 @@ async function handleExcelFile(file) {
         const data = await response.json();
         
         if (response.ok && data.success !== false && data.status !== 'error') {
-            alert("Backend Response: " + JSON.stringify(data)); // THÊM DÒNG NÀY ĐỂ DEBUG
             showToast(data.message || "Import thành công!");
             closeImport();
             fetchStudents(); // Load lại data
