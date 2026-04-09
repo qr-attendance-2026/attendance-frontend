@@ -21,7 +21,7 @@ async function fetchStudents() {
                 users = data; 
             }
 
-            const studentUsers = users.filter(u => u.role === 'student' || u.student !== null);
+            const studentUsers = users.filter(u => (u.role && u.role.toLowerCase() === 'student') || u.student !== null);
 
             students = studentUsers.map(u => ({
                 id: u.student && u.student.student_code ? u.student.student_code : u.id,
@@ -183,12 +183,12 @@ async function handleExcelFile(file) {
 
         const data = await response.json();
         
-        if (response.ok) {
+        if (response.ok && data.success !== false && data.status !== 'error') {
             showToast(data.message || "Import thành công!");
             closeImport();
             fetchStudents(); // Load lại data
         } else {
-            showToast(data.message || "Import thất bại!");
+            showToast(data.message || data.error || "Import thất bại!");
         }
     } catch (error) {
         console.error(error);
