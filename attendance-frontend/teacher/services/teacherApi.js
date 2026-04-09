@@ -15,6 +15,15 @@ const teacherApi = {
     async getLiveAttendance(sessionId) {
         const response = await apiClient.get(`/teacher/sessions/${sessionId}/live`);
         return response.data;
+    },
+    async getStudentAttendance(studentId) {
+        const response = await apiClient.get(`/teacher/students/${studentId}/attendance`);
+        return response.data;
+    },
+    async submitAttendance(payload) {
+        // payload: { student_code, course_class_id, attendance_date, check_number }
+        const response = await apiClient.post('/teacher/attendance/check-in', payload);
+        return response.data;
     }
 };
 

@@ -230,7 +230,35 @@
             const config = { fps: 10, qrbox: { width: 250, height: 250 } };
             html5QrCode.start({ facingMode: "environment" }, config, async (decodedText) => {
                 await window.closeScanner();
-                alert("Đã nhận diện SV: " + decodedText);
+                
+                try {
+                    const studentData = JSON.parse(decodedText);
+                    const classId = el("course_class_id").value;
+                    const checkNum = el("check_number").value;
+                    const attDate = el("attendanceDate").value;
+
+                    if (!classId) return alert("Vui lòng chọn lớp học trước khi quét!");
+
+                    if (studentData.type === 'student' && studentData.student_code) {
+                        const res = await teacherApi.submitAttendance({
+                            student_code: studentData.student_code,
+                            course_class_id: parseInt(classId),
+                            check_number: parseInt(checkNum),
+                            attendance_date: attDate
+                        });
+
+                        if (res.success) {
+                            alert(`✅ Điểm danh thành công:\nSV: ${studentData.name}\nMSSV: ${studentData.student_code}`);
+                            window.loadStudents(); 
+                        } else {
+                            alert("❌ Lỗi: " + (res.message || "Không thể ghi nhận điểm danh"));
+                        }
+                    } else {
+                        alert("⚠️ Mã QR không đúng định dạng sinh viên!");
+                    }
+                } catch (e) {
+                    alert("⚠️ Lỗi xử lý mã QR: " + e.message);
+                }
             }).catch(err => {
                 alert("Lỗi camera: " + err);
                 window.closeScanner();
