@@ -1,0 +1,162 @@
+:root {
+    --primary-brown: #6f5444;    /* Nâu chủ đạo */
+    --beige-border: #d6c6b8;     /* Viền beige */
+    --light-bg: #fdfaf7;         /* Nền xám beige cực nhẹ */
+    --text-dark: #2d241e;
+    --text-muted: #8a7a6b;
+}
+
+.bg-light-beige {
+    background-color: var(--light-bg);
+    color: var(--text-dark);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh; /* Đảm bảo nền luôn phủ kín trang */
+}
+
+.text-brown { color: var(--primary-brown); }
+.text-brown-muted { color: var(--text-muted); font-size: 0.8rem; font-weight: 700; }
+.tracking-wide { letter-spacing: 0.1em; }
+
+/* --- RESPONSIVE TYPOGRAPHY --- */
+h2 {
+    font-size: calc(1.3rem + 0.6vw); /* Chữ tự co giãn theo màn hình */
+}
+
+/* Filter Panel */
+.filter-panel {
+    background: #ffffff;
+    border: 1px solid var(--beige-border);
+    border-radius: 12px;
+}
+
+.label-sub {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--text-muted);
+}
+
+/* Button Nâu Chuyên nghiệp */
+.btn-brown {
+    background-color: var(--primary-brown);
+    border-color: var(--primary-brown);
+    color: #ffffff;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    white-space: nowrap; /* Tránh nhảy dòng chữ trong nút */
+}
+
+.btn-brown:hover {
+    background-color: #5a4336;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* Card Table sáng */
+.table-card-light {
+    background: #ffffff;
+    border: 1px solid var(--beige-border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table-header-light {
+    background-color: #f8f4f1;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+/* Tùy chỉnh Table Bootstrap */
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-hover-bg: #fdfaf7;
+    color: var(--text-dark);
+}
+
+.table th, .table td {
+    border-bottom: 1px solid #f1ece8;
+    vertical-align: middle;
+}
+
+/* Badge trạng thái */
+.badge-present, .badge-absent, .badge-late {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: inline-block;
+}
+
+.badge-present { background-color: #e8f5e9; color: #2e7d32; }
+.badge-absent { background-color: #ffebee; color: #c62828; }
+.badge-late { background-color: #fff3e0; color: #ef6c00; }
+
+/* Summary Cards */
+.summary-card {
+    background: #ffffff;
+    border: 1px solid var(--beige-border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: 0.3s;
+    height: 100%; /* Đảm bảo các card cao bằng nhau trong Row */
+}
+
+.summary-card:hover {
+    border-color: var(--primary-brown);
+    box-shadow: 0 5px 15px rgba(111,84,68,0.1);
+}
+
+/* --- RESPONSIVE ADJUSTMENTS (QUAN TRỌNG) --- */
+
+/* Mobile (Màn hình dưới 576px) */
+@media (max-width: 575.98px) {
+    .content-body {
+        padding: 15px !important; /* Giảm padding tổng thể */
+    }
+    
+    .filter-panel {
+        padding: 15px !important;
+    }
+
+    .btn-brown {
+        margin-top: 10px;
+        width: 100%; /* Nút bấm chiếm hết chiều rộng trên mobile */
+    }
+
+    /* Table Mobile: Hiển thị cuộn ngang nếu bảng quá rộng */
+    .table-responsive {
+        border: 0;
+    }
+
+    .table td, .table th {
+        font-size: 0.85rem; /* Giảm kích thước chữ trong bảng */
+        padding: 12px 8px !important;
+    }
+    
+    /* Thu nhỏ Badge trên mobile */
+    .badge-present, .badge-absent, .badge-late {
+        padding: 4px 8px;
+        font-size: 0.65rem;
+    }
+}
+
+/* Tablet & Mobile (Dưới 992px) */
+@media (max-width: 991.98px) {
+    .summary-card {
+        padding: 15px;
+    }
+    
+    .summary-card h3 {
+        font-size: 1.5rem;
+    }
+
+    /* Ẩn bớt cột "Giảng viên" trên màn hình nhỏ nếu cần để bảng gọn hơn */
+    /* .hide-on-mobile { display: none; } */
+}
+
+/* Sidebar Responsive Fix */
+@media (min-width: 992px) {
+    .content-body {
+        margin-left: 0; /* Tùy chỉnh nếu sidebar của bạn là fixed */
+    }
+}

@@ -1,0 +1,70 @@
+:root {
+    --sidebar-bg: #e4d4c6;      /* nền đậm hơn */
+    --primary-color: #6f5444;   /* nâu đậm hơn */
+    --text-color: #000;
+    --text-muted: #4e4138;      /* chữ phụ đậm hơn */
+    --hover-bg: #d8c5b4;        /* hover đậm hơn */
+    --transition: all 0.3s ease;
+}
+
+.sidebar {
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid #d6c6b8;
+    transition: var(--transition);
+}
+
+/* Menu items */
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 18px;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    margin: 2px 0;
+}
+
+.menu-item:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-color);
+    transform: translateX(5px);
+}
+
+.menu-item.active {
+    background-color: #d8c5b4;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Logout */
+.menu-item.logout:hover {
+    background-color: #f1c7c9;
+    color: #7a1c23;
+}
+
+/* Avatar */
+.avatar {
+    transition: var(--transition);
+}
+
+.avatar:hover {
+    border-color: var(--primary-color) !important;
+    background: #d8c5b4 !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        min-width: 80px !important;
+        padding: 10px !important;
+    }
+
+    .user-text,
+    .logo span,
+    .menu-item span,
+    .logo-text {
+        display: none;
+    }
+}

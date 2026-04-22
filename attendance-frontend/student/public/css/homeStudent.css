@@ -1,0 +1,149 @@
+.bg-main {
+    background-color: #f6f1eb; /* nền kem giống ảnh */
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #3b3b3b;
+}
+
+/* Header divider */
+.border-bottom {
+    border-bottom: 1px solid #e6ded6 !important;
+}
+
+/* Đồng hồ */
+.clock-minimal {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #8b6f5a;
+    background: #ffffff;
+    padding: 8px 16px;
+    border-radius: 50px;
+    border: 1px solid #e6ded6;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+
+/* Card */
+.pro-card {
+    background: #ffffff;
+    border: 1px solid #e6ded6;
+    padding: 40px;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.35s ease;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.04);
+}
+
+.pro-card:hover {
+    border-color: #bfa58a;
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(191,165,138,0.25);
+}
+
+/* Label */
+.card-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #a8896d;
+    display: block;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.pro-card h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #3b3b3b;
+}
+
+.pro-card p {
+    font-size: 0.95rem;
+    color: #8a817a;
+    margin: 0;
+}
+
+/* Arrow */
+.card-arrow {
+    width: 45px;
+    height: 45px;
+    background: #f6f1eb;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5c4b40;
+    font-size: 1.2rem;
+    transition: 0.3s;
+}
+
+.pro-card:hover .card-arrow {
+    background: #bfa58a;
+    color: rgb(16, 16, 16);
+    transform: rotate(-45deg);
+}
+
+/* Student name */
+#student-name {
+    color: #000;        /* đen hoàn toàn cho dễ nhìn */
+    font-weight: 700;   /* đậm hơn */
+    font-size: 1.4rem;  /* to hơn */
+}
+
+/* chữ Xin chào */
+.greeting-text {
+    color: #000;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Scan success */
+.pro-card.scan-success {
+    border-color: #8fbc8f;
+    box-shadow: 0 10px 30px rgba(143,188,143,0.25);
+}
+
+.pro-card.scan-success .card-arrow {
+    background: #8fbc8f;
+    color: white;
+}
+
+.pro-card.scan-success .card-label {
+    color: #8fbc8f;
+}
+
+/* QR scanner card */
+.qr-scanner-card {
+    border: 2px dashed #bfa58a;
+}
+
+.qr-scanner-card:hover {
+    border-style: solid;
+}
+
+/* Ngày học */
+.schedule-date {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #5c4b40;
+
+    background: #f6f1eb;
+    padding: 6px 12px;
+    border-radius: 8px;
+
+    border: 1px solid #e6ded6;
+    letter-spacing: 0.04em;
+}
+
+/* nếu là hôm nay thì highlight */
+.schedule-date.today {
+    background: #fff7ed;
+    border-color: #bfa58a;
+    color: #7a4f2b;
+    box-shadow: 0 2px 8px rgba(191,165,138,0.2);
+}

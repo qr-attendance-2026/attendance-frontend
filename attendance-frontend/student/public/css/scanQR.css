@@ -1,0 +1,133 @@
+:root {
+    --primary-brown: #6f5444;
+    --beige: #f6f1eb;
+    --border: #d4c4b7;
+    --text-muted: #8a7a6b;
+    --success-green: #28a745;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: #2d241e;
+    min-height: 100vh;
+}
+
+.bg-light-beige {
+    background: var(--beige);
+}
+
+/* --- SCANNER WRAPPER --- */
+.scanner-wrapper {
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+    padding: 0 15px; /* Tránh sát mép màn hình mobile */
+}
+
+/* --- SCANNER BOX --- */
+.scanner-box {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1/1; /* Luôn giữ khung hình vuông */
+    background: #e8dcd2;
+    border: 1px solid var(--border);
+    border-radius: 20px; /* Bo tròn mạnh hơn cho hiện đại */
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,.08);
+    transition: .25s;
+}
+
+.scanner-box:hover {
+    box-shadow: 0 10px 25px rgba(0,0,0,.12);
+    border-color: var(--primary-brown);
+}
+
+/* Tùy chỉnh thư viện Html5Qrcode */
+#reader {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important; /* Xóa viền mặc định của thư viện */
+}
+
+#reader video {
+    object-fit: cover !important;
+    border-radius: 15px;
+}
+
+/* Trạng thái Camera chưa bật */
+#camera-off {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: #eee5dd;
+    font-size: .9rem;
+    color: var(--text-muted);
+    z-index: 5;
+}
+
+#camera-off i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: var(--primary-brown);
+    opacity: 0.6;
+}
+
+/* --- RESPONSIVE ADJUSTMENTS --- */
+
+/* Mobile nhỏ (iPhone SE, các dòng máy nhỏ) */
+@media (max-width: 375px) {
+    .content {
+        padding: 15px;
+    }
+    
+    h2 {
+        font-size: 1.25rem;
+    }
+
+    .scanner-box {
+        border-radius: 15px;
+    }
+}
+
+/* Tablet và Desktop */
+@media (min-width: 768px) {
+    .scanner-wrapper {
+        margin-top: 2rem;
+    }
+    
+    .scanner-box {
+        max-width: 450px;
+    }
+}
+
+/* Tùy chỉnh vùng quét (Vùng focus của camera) */
+#reader__scan_region {
+    background: transparent !important;
+}
+
+#reader__scan_region img {
+    /* Ẩn icon mặc định của thư viện nếu cần */
+    display: none !important;
+}
+
+/* Hiệu ứng khung quét xanh khi nhận diện */
+#reader__scan_region {
+    border: 3px solid var(--success-green) !important;
+    border-radius: 12px;
+    box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.3); /* Tạo hiệu ứng tối xung quanh vùng quét */
+}
+
+/* Nút bấm trong thư viện (nếu hiện nút Stop/Start) */
+#reader button {
+    background-color: var(--primary-brown) !important;
+    color: white !important;
+    border: none !important;
+    padding: 8px 16px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    margin-top: 10px !important;
+}

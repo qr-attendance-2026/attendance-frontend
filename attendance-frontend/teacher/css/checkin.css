@@ -1,0 +1,193 @@
+/* ===== 1. LAYOUT CHUNG ===== */
+:root{
+    --primary-green:#157347;
+    --primary-green-hover:#105a38;
+    --light-green:#dcfce7;
+    --text-slate:#64748b;
+    --bg-main:#f1f5f9;
+}
+
+body{
+    background:var(--bg-main);
+    font-family: "Segoe UI",Roboto,sans-serif;
+}
+
+/* main content */
+.main-content{
+    padding:90px 40px;
+    min-height:100vh;
+}
+
+/* ===== 2. CARD ===== */
+.card{
+    border-radius:16px;
+}
+
+.card-header{
+    border-bottom:1px solid #f1f5f9;
+}
+
+/* ===== 3. BUTTON ===== */
+.btn-primary{
+    background:var(--primary-green);
+    border:none;
+}
+
+.btn-primary:hover{
+    background:var(--primary-green-hover);
+}
+
+.btn-dark{
+    border-radius:10px;
+}
+
+/* ===== 4. CAMERA SCAN ===== */
+#reader-container{
+    background:#000;
+    border-radius:12px;
+    overflow:hidden;
+}
+
+#reader video{
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover;
+}
+
+/* overlay khi scan */
+#scan-overlay{
+    background:rgba(0,0,0,0.5);
+    backdrop-filter:blur(2px);
+}
+
+/* result text */
+#scan-result{
+    font-size:0.9rem;
+    font-weight:600;
+}
+
+/* ===== 5. TABLE ATTENDANCE ===== */
+.table thead th{
+    background:#f8fafc;
+    font-size:0.75rem;
+    font-weight:700;
+    letter-spacing:.05em;
+    color:var(--text-slate);
+}
+
+.table tbody tr{
+    transition:all .2s;
+}
+
+.table tbody tr:hover{
+    background:#f8fafc;
+}
+
+/* ===== 6. STATUS BADGE ===== */
+.status-ok{
+    background:var(--light-green);
+    color:var(--primary-green);
+    padding:4px 12px;
+    border-radius:100px;
+    font-size:.75rem;
+    font-weight:600;
+}
+
+.status-late{
+    background:#fee2e2;
+    color:#dc2626;
+    padding:4px 12px;
+    border-radius:100px;
+    font-size:.75rem;
+    font-weight:600;
+}
+
+/* ===== 7. QR OVERLAY ===== */
+#qrOverlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    opacity:0;
+    pointer-events:none;
+    transition:0.25s;
+}
+
+#qrOverlay.active{
+    opacity:1;
+    pointer-events:auto;
+}
+
+/* card QR */
+.qr-card{
+    background:white;
+    padding:40px;
+    border-radius:20px;
+    width:380px;
+    max-width:90%;
+    box-shadow:0 10px 40px rgba(0,0,0,.2);
+}
+
+/* QR box */
+.qrcode-wrapper{
+    background:#f8fafc;
+    padding:20px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:20px;
+}
+
+#qrcode canvas{
+    width:200px !important;
+    height:200px !important;
+}
+
+/* ===== 8. LIVE COUNT ===== */
+#live-count{
+    font-size:0.9rem;
+    font-weight:700;
+}
+
+/* ===== 9. SCROLL TABLE ===== */
+.table-responsive{
+    scrollbar-width:thin;
+}
+
+.table-responsive::-webkit-scrollbar{
+    width:6px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb{
+    background:#cbd5e1;
+    border-radius:10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover{
+    background:var(--primary-green);
+}
+
+/* ===== 10. RESPONSIVE ===== */
+@media(max-width:992px){
+
+.main-content{
+    padding:80px 20px;
+}
+
+.qr-card{
+    padding:30px;
+}
+
+}
+
+@media(max-width:576px){
+
+.qr-card{
+    width:95%;
+}
+
+}

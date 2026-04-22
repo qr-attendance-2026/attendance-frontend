@@ -1,0 +1,118 @@
+:root {
+    --primary-brown: #6f5444;
+    --beige-border: #d6c6b8;
+    --light-bg: #fdfaf7;
+    --text-muted: #8a7a6b;
+}
+
+.bg-main {
+    background: var(--light-bg) !important;
+    color: #2d241e !important;
+    min-height: 100vh;
+}
+
+.text-brown { color: var(--primary-brown) !important; }
+.text-brown-muted { color: var(--text-muted); }
+
+/* --- PROFILE CARDS --- */
+.profile-card, .info-card {
+    background: #ffffff !important;
+    border: 1px solid var(--beige-border) !important;
+    border-radius: 12px;
+    padding: 2rem;
+    color: #2d241e !important;
+    margin-bottom: 1.5rem; /* Khoảng cách giữa các card khi xếp chồng */
+}
+
+/* Avatar */
+#profile-avatar {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(145deg, #6f5444, #8a7a6b) !important;
+    color: white !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    font-weight: bold;
+    border: 4px solid #fff;
+    box-shadow: 0 4px 10px rgba(111, 84, 68, 0.2);
+    margin: 0 auto 1rem; /* Canh giữa avatar */
+}
+
+/* Label tiêu đề */
+.label-sub {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* Button */
+.btn-brown {
+    background-color: var(--primary-brown) !important;
+    border: none !important;
+    color: white !important;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+    padding: 10px 20px;
+}
+
+.btn-brown:hover {
+    background-color: #5a4336 !important;
+    transform: translateY(-2px);
+}
+
+.btn-edit-outline {
+    border: 1px solid var(--beige-border) !important;
+    color: var(--primary-brown) !important;
+    background: #fff;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 10px 20px;
+}
+
+/* Input */
+.custom-input {
+    background: #ffffff !important;
+    border: 1px solid var(--beige-border) !important;
+    color: #2d241e !important;
+    border-radius: 8px;
+    padding: 10px 14px;
+    width: 100%; /* Đảm bảo input full width trên mobile */
+}
+
+/* --- RESPONSIVE MOBILE --- */
+@media (max-width: 768px) {
+    .profile-card, .info-card {
+        padding: 1.5rem;
+    }
+    
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-brown, .btn-edit-outline {
+        width: 100%;
+    }
+
+    h2 { font-size: 1.5rem; }
+}
+
+/* --- TRẠNG THÁI CHỈNH SỬA --- */
+.form-control[readonly], .form-control:disabled {
+    background: #f8f4f1 !important;
+    border: 1px dashed var(--beige-border) !important;
+    color: var(--text-muted) !important;
+}
+
+.editable:not(:disabled) {
+    background: #ffffff !important;
+    border: 1px solid var(--primary-brown) !important;
+    color: #000 !important;
+}

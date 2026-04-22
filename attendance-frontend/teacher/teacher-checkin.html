@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Điểm danh QR Code - SAMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="./css/style.css"> 
+    <link rel="stylesheet" href="./css/checkin.css"> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body class="bg-light">
+    <div id="nav-placeholder"></div>
+
+    <main class="main-content">
+        <div class="container-fluid">
+            <div class="row g-4">
+                <div class="col-xl-4 col-lg-5">
+                    <div class="card border-0 shadow-sm rounded-4 mb-4">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3">
+                                    <i class="bi bi-gear-fill text-primary fs-4"></i>
+                                </div>
+                                <h5 class="fw-bold mb-0">Thiết lập phiên</h5>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-secondary">Course Class ID</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-hash"></i></span>
+                                    <input type="number" id="class-id" class="form-control bg-light border-start-0" placeholder="ID lớp học">
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-6">
+                                    <label class="form-label small fw-bold text-secondary">Lần điểm danh</label>
+                                    <input type="number" id="check-number" class="form-control bg-light" value="1">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small fw-bold text-secondary">Thời gian (phút)</label>
+                                    <input type="number" id="duration" class="form-control bg-light" value="15">
+                                </div>
+                            </div>
+                            
+                            <button id="btn-open-session" class="btn btn-primary w-100 py-3 fw-bold shadow-sm">
+                                <i class="bi bi-qr-code me-2"></i>TẠO MÃ QR TỔNG
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="fw-bold mb-0">Quét mã sinh viên</h6>
+                                <span id="camera-status" class="badge bg-secondary rounded-pill">Chưa bật</span>
+                            </div>
+                            
+                            <div id="reader-container" class="position-relative bg-dark rounded-4 mb-3 overflow-hidden" style="aspect-ratio: 4/3;">
+                                <div id="reader" style="width: 100%;"></div>
+                                <div id="scan-overlay" class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center d-none">
+                                    <div class="spinner-border text-light" role="status"></div>
+                                </div>
+                            </div>
+
+                            <div id="scan-result" class="text-center p-2 rounded-3 mb-2" style="min-height: 40px;"></div>
+                            
+                            <button id="btn-toggle-camera" class="btn btn-dark w-100 py-2">
+                                <i class="bi bi-camera-fill me-2"></i>BẬT CAMERA QUÉT
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-8 col-lg-7">
+                    <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                        <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0 fw-bold">Trạng thái điểm danh trực tiếp</h6>
+                                <small class="text-muted" id="session-info">Chưa có phiên làm việc</small>
+                            </div>
+                            <div class="text-end">
+                                <span id="live-count" class="badge bg-success fs-6 rounded-pill px-3 py-2">0 / 0</span>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body p-0">
+                            <div class="table-responsive" style="max-height: 75vh;">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="bg-light sticky-top">
+                                        <tr class="small text-uppercase text-secondary">
+                                            <th class="ps-4 py-3">Mã sinh viên</th>
+                                            <th>Họ và Tên</th>
+                                            <th>Thời điểm</th>
+                                            <th>Phương thức</th>
+                                            <th class="pe-4 text-end">Trạng thái</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="attendance-list" class="small">
+                                        <tr>
+                                            <td colspan="5" class="text-center py-5">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" width="80" class="opacity-25 mb-3"><br>
+                                                <span class="text-muted">Đang chờ mở phiên điểm danh...</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="qrOverlay">
+        <div class="qr-card text-center">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold mb-0">Mã QR Điểm Danh</h4>
+                <button id="btn-close-overlay" class="btn-close"></button>
+            </div>
+            
+            <p id="overlay-class-info" class="text-secondary small mb-1">Mã lớp: ...</p>
+            <div class="qrcode-wrapper shadow-sm">
+                <div id="qrcode"></div>
+            </div>
+            
+            <div class="alert alert-danger border-0 rounded-4 py-2 mb-4">
+                <i class="bi bi-clock-history me-2"></i>
+                Hết hạn lúc: <span id="display-expiry" class="fw-bold">--:--</span>
+            </div>
+            
+            <button id="btn-close-overlay-large" class="btn btn-dark w-100 py-3 fw-bold rounded-4 shadow">XÁC NHẬN ĐÃ HIỂN THỊ</button>
+        </div>
+    </div>
+
+    <script src="nav.js"></script>
+<script type="module" src="./services/teacher-checkin.js"></script>
+<script type="module" src="./services/teacherService.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,177 @@
+/* ===============================
+   VARIABLES
+================================ */
+:root{
+    --primary-green:#15803d;
+    --green-light:#ecfdf5;
+    --green-border:#bbf7d0;
+
+    --red:#dc2626;
+    --red-light:#fee2e2;
+
+    --border:#e5e7eb;
+    --text-muted:#6b7280;
+}
+
+
+/* ===============================
+   LAYOUT
+================================ */
+body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    background:#f8fafc;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto;
+}
+
+.content{
+    flex:1;
+    margin-left:280px;
+    padding:90px 28px 28px;
+    width:calc(100% - 280px);
+    transition:margin .3s ease;
+}
+
+
+/* ===============================
+   CARD STATES
+================================ */
+
+.card{
+    border-radius:16px;
+}
+
+.active-card{
+    background:var(--green-light) !important;
+    border-left:5px solid var(--primary-green) !important;
+    transform:translateX(6px);
+    box-shadow:0 6px 18px rgba(0,0,0,0.06) !important;
+}
+
+.hover-card{
+    border:1px solid transparent;
+    transition:all .25s ease;
+}
+
+.hover-card:hover:not(.active-card){
+    border-color:var(--border);
+    transform:translateY(-4px);
+    background:#fff;
+    box-shadow:0 6px 16px rgba(0,0,0,0.06);
+}
+
+
+/* ===============================
+   STATUS BADGE
+================================ */
+
+.status-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 14px;
+    border-radius:50px;
+    font-size:.8rem;
+    font-weight:600;
+}
+
+.status-present{
+    background:var(--green-light);
+    color:var(--primary-green);
+}
+
+.status-absent{
+    background:var(--red-light);
+    color:var(--red);
+}
+
+
+/* ===============================
+   CLASS BADGE
+================================ */
+
+.badge-green-light{
+    background:var(--green-light);
+    color:var(--primary-green);
+    font-weight:600;
+    font-size:.75rem;
+    padding:5px 10px;
+    border-radius:8px;
+    border:1px solid var(--green-border);
+}
+
+
+/* ===============================
+   TABLE IMPROVEMENT
+================================ */
+
+.table thead{
+    background:#f9fafb;
+    font-size:.8rem;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    color:var(--text-muted);
+}
+
+.table td{
+    padding:14px 10px;
+}
+
+.table-hover tbody tr:hover{
+    background:#f9fafb;
+}
+
+
+/* ===============================
+   SCROLLBAR
+================================ */
+
+.custom-scrollbar{
+    scrollbar-width:thin;
+}
+
+.custom-scrollbar::-webkit-scrollbar{
+    width:5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb{
+    background:#cbd5e1;
+    border-radius:10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover{
+    background:#94a3b8;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track{
+    background:transparent;
+}
+
+
+/* ===============================
+   UTILITIES
+================================ */
+
+.letter-spacing-1{
+    letter-spacing:1px;
+}
+
+.fw-500{
+    font-weight:500;
+}
+
+
+/* ===============================
+   RESPONSIVE
+================================ */
+
+@media (max-width:991.98px){
+
+    .content{
+        margin-left:0;
+        width:100%;
+        padding:80px 18px 20px;
+    }
+
+}

@@ -1,0 +1,163 @@
+:root {
+    --brown: #6f5444;
+    --beige: #f7f3ef;
+    --border: #e5d7ca;
+}
+
+.bg-light-beige {
+    background: var(--beige);
+    min-height: 100vh; /* Đảm bảo nền phủ kín trang khi xoay điện thoại */
+}
+
+/* --- STUDENT CARD --- */
+.student-card {
+    background: #fff;
+    border-radius: 20px;
+    max-width: 460px;
+    width: 100%; /* Đảm bảo co giãn theo container */
+    margin: 0 auto; /* Căn giữa card */
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(111, 84, 68, 0.1);
+}
+
+/* --- HEADER --- */
+.card-top {
+    background: linear-gradient(135deg, #6f5444, #8a6b57);
+    color: #fff;
+    padding: 22px;
+}
+
+.card-title {
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 1.1rem;
+}
+
+.card-subtitle {
+    opacity: .85;
+    font-size: 0.85rem;
+}
+
+/* --- BODY --- */
+.card-body-custom {
+    padding: 30px;
+}
+
+.qr-box {
+    display: flex;
+    justify-content: center;
+}
+
+#qrcode img {
+    max-width: 100%; /* QR tự thu nhỏ theo card */
+    height: auto;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    background: #fff;
+}
+
+/* --- STUDENT INFO --- */
+.student-name {
+    color: var(--brown);
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-top: 10px;
+}
+
+.student-id {
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--brown);
+    font-size: 1.3rem;
+}
+
+.class-badge {
+    display: inline-block;
+    padding: 7px 16px;
+    background: #f1ece8;
+    color: var(--brown);
+    border-radius: 50px;
+    font-size: .85rem;
+}
+
+/* --- FOOTER --- */
+.card-footer-custom {
+    border-top: 1px solid var(--border);
+    padding: 14px;
+    background: #faf8f6;
+    font-size: 0.85rem;
+}
+
+/* --- RESPONSIVE LOGIC --- */
+
+/* Mobile (Dưới 576px) */
+@media (max-width: 575.98px) {
+    .container-fluid {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+
+    .card-body-custom {
+        padding: 20px; /* Giảm padding trên mobile */
+    }
+
+    .student-name {
+        font-size: 1.25rem;
+    }
+
+    .student-id {
+        font-size: 1.1rem;
+    }
+
+    /* Nhóm nút bấm điều khiển */
+    .d-flex.gap-3 {
+        flex-direction: column; /* Xếp chồng 2 nút Tải xuống & Phóng to */
+        width: 100%;
+        max-width: 460px;
+        margin: 0 auto;
+    }
+
+    .btn-download, .btn-zoom {
+        width: 100%; /* Nút bấm rộng 100% trên mobile */
+        text-align: center;
+    }
+}
+
+/* Warning box responsive */
+.warning-box {
+    max-width: 460px;
+    margin: 0 auto;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* --- BUTTONS --- */
+.btn-download {
+    background: #fff;
+    border: 1px solid var(--border);
+    color: var(--brown);
+    border-radius: 10px;
+    padding: 10px 22px;
+    transition: 0.3s;
+}
+
+.btn-download:hover {
+    background: #f4efe9;
+    transform: translateY(-2px);
+}
+
+.btn-zoom {
+    background: var(--brown);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 22px;
+    transition: 0.3s;
+}
+
+.btn-zoom:hover {
+    background: #5a4336;
+    transform: translateY(-2px);
+}
