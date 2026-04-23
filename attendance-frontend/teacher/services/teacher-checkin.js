@@ -163,11 +163,17 @@ document.getElementById("btn-open-session").addEventListener("click", async () =
 
     try {
 
-const res = await teacherService.openSession(classId, checkNumber, duration);
+            const res = await teacherService.openSession(classId, checkNumber, duration);
 
-if (res.success) {
+            // 🔥 DEBUG
+            console.log("API RESPONSE:", res);
 
-    currentSessionId = res.data.session_id;
+            if (!res || !res.data) {
+                alert("API lỗi hoặc không có data");
+                return;
+            }
+
+            currentSessionId = res.data.session_id;
 
             document.getElementById("overlay-class-info").innerText =
                 `Mã lớp: ${res.data.class_code} | Lần: ${res.data.check_number}`;
@@ -175,13 +181,27 @@ if (res.success) {
             document.getElementById("display-expiry").innerText =
                 new Date(res.data.qr_expires_at).toLocaleTimeString();
 
-            qrGenerator.clear();
-            qrGenerator.makeCode(res.data.qr_payload);
+            // 🔥 DEBUG QR
+            console.log("QR PAYLOAD:", res.data.qr_payload);
+
+           console.log("QR PAYLOAD:", res.data.qr_payload);
+
+            // reset
+            qrcodeDiv.innerHTML = "";
+
+            // tạo QR mới
+            new QRCode(qrcodeDiv, {
+                text: String(res.data.qr_payload),
+                width: 250,
+                height: 250
+            });
 
             overlay.style.display = "flex";
 
+            // hiển thị popup
+            overlay.style.display = "flex";
+
             startPolling();
-        }
 
     } catch (err) {
 
@@ -298,7 +318,7 @@ async function updateAttendanceList() {
 
     try {
 
-const res = await teacherService.getLive(currentSessionId);
+const res = await teacherService.getAttendanceStatus(currentSessionId);
 
 
         if (!res.success) return;
@@ -346,3 +366,8 @@ const res = await teacherService.getLive(currentSessionId);
 document.getElementById("btn-close-overlay").onclick = () => {
     overlay.style.display = "none";
 };
+import apiClient from './apiClient.js'; 
+
+apiClient.get('/test')
+  .then(res => console.log("✅ KẾT NỐI OK:", res.data))
+  .catch(err => console.error("❌ LỖI:", err));

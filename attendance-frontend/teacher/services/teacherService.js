@@ -68,8 +68,8 @@ import apiClient from './apiClient.js';
 
 export const teacherService = {
     // Mở phiên điểm danh
-    async generateQR(classId, checkNumber, duration) {
-        // Bỏ chữ '/open' ở cuối route
+    async openSession(classId, checkNumber, duration) {
+        // Bỏ chữ '/open' ở cuối route generateQR
         const response = await apiClient.post('/teacher/sessions', {
             course_class_id: classId,
             check_number: checkNumber,

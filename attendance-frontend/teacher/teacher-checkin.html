@@ -140,6 +140,336 @@
     <script src="nav.js"></script>
 <script type="module" src="./services/teacher-checkin.js"></script>
 <script type="module" src="./services/teacherService.js"></script>
+// Copy script này vào cuối file HTML (trước </body>)
+<!-- <script>
+// Test button - Click "TẠO MÃ QR TỔNG" sẽ hiện QR
+document.getElementById('btn-open-session').onclick = function() {
+    const classId = document.getElementById('class-id').value || 'CS101';
+    
+    // Show QR
+    const overlay = document.getElementById('qrOverlay');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Tạo QR
+    const qrcode = document.getElementById('qrcode');
+    qrcode.innerHTML = '';
+    QRCode.toCanvas(qrcode, `https://sams.edu.vn/checkin?class=${classId}&check=1`, {
+        width: 220,
+        colorDark: '#157347'
+    });
+    
+    // Update info
+    document.getElementById('overlay-class-info').textContent = `Mã lớp: ${classId}`;
+    document.getElementById('display-expiry').textContent = '15 phút';
+    
+    console.log('✅ Nút TẠO QR hoạt động!');
+};
+</script> -->
+<!-- GIỮ SCRIPT QR CŨ + THÊM CAMERA -->
+<!-- <script>
+// 1. CAMERA SCANNER (thêm mới)
+class QrScanner {
+    constructor() {
+        this.scanner = null;
+        this.init();
+    }
+    
+    init() {
+        document.getElementById('btn-toggle-camera').onclick = () => this.toggleCamera();
+    }
+    
+    async toggleCamera() {
+        if (this.scanner && this.scanner.isScanning) {
+            this.stopCamera();
+            return;
+        }
+        
+        try {
+            this.scanner = new Html5Qrcode("reader");
+            await this.scanner.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 250, height: 250 } },
+                (result) => this.onScan(result),
+                () => {}
+            );
+            
+            // UI
+            document.getElementById('camera-status').outerHTML = 
+                '<span id="camera-status" class="badge bg-success rounded-pill">Đang quét...</span>';
+            document.getElementById('btn-toggle-camera').innerHTML = 
+                '<i class="bi bi-camera-video-off me-2"></i>TẮT CAMERA';
+                
+        } catch (err) {
+            alert('❌ Camera lỗi: ' + err);
+        }
+    }
+    
+//     onScan(result) {
+//     console.log('📱 QR:', result);
+    
+//     try {
+//         // Parse QR sinh viên JSON
+//         const qrData = JSON.parse(result);
+        
+//         // Session ID từ input teacher
+//         const sessionId = document.getElementById('class-id').value;
+//         if (!sessionId) {
+//             document.getElementById('scan-result').innerHTML = '❌ Nhập Session ID!';
+//             return;
+//         }
+        
+//         // Gọi API Laravel
+//         fetch('/api/teacher/attendance/scan', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+//             },
+//             body: JSON.stringify({
+//                 session_id: parseInt(sessionId),
+//                 student_code: qrData.student_code
+//             })
+//         }).then(res => res.json()).then(data => {
+//             console.log('API:', data);
+            
+//             if (data.success) {
+//                 document.getElementById('scan-result').innerHTML = 
+//                     `✅ ${data.message}<br><small>${qrData.name}</small>`;
+//                 document.getElementById('scan-result').className = 
+//                     'text-center p-3 bg-success text-white fw-bold rounded-3 mb-2';
+//             } else {
+//                 document.getElementById('scan-result').innerHTML = `❌ ${data.message}`;
+//                 document.getElementById('scan-result').className = 
+//                     'text-center p-3 bg-danger text-white fw-bold rounded-3 mb-2';
+//             }
+//         }).catch(e => {
+//             console.error(e);
+//             document.getElementById('scan-result').innerHTML = '❌ Lỗi API!';
+//         });
+        
+//     } catch (e) {
+//         console.error('JSON parse error:', e);
+//         document.getElementById('scan-result').innerHTML = '❌ QR sinh viên lỗi!';
+//     }
+    
+//     setTimeout(() => document.getElementById('scan-result').textContent = '', 4000);
+// }
+onScan(result) {
+    console.log('📱 QR:', result);
+    
+    try {
+        const qrData = JSON.parse(result);
+        const sessionId = parseInt(document.getElementById('class-id').value);
+        
+        console.log('📤 Gửi API:', { session_id: sessionId, student_code: qrData.student_code });
+        
+        if (!sessionId) {
+            showScanResult('❌ Nhập Session ID!', 'danger');
+            return;
+        }
+        
+        // ✅ DEBUG: Test từng bước
+        teacherService.scanStudent(sessionId, qrData.student_code)
+            .then(data => {
+                console.log('✅ API RESPONSE:', data);
+                showScanResult(`✅ ${data.message}`, 'success');
+            })
+            .catch(error => {
+                console.error('❌ API ERROR CHI TIẾT:', error);
+                console.error('Error status:', error.response?.status);
+                console.error('Error data:', error.response?.data);
+                showScanResult(`❌ ${error.message}`, 'danger');
+            });
+            
+    } catch (e) {
+        console.error('❌ QR Parse:', e);
+        showScanResult('❌ QR lỗi!', 'danger');
+    }
+}
+    
+    stopCamera() {
+        if (this.scanner) {
+            this.scanner.stop().then(() => {
+                this.scanner.clear();
+                document.getElementById('camera-status').outerHTML = 
+                    '<span id="camera-status" class="badge bg-secondary rounded-pill">Chưa bật</span>';
+                document.getElementById('btn-toggle-camera').innerHTML = 
+                    '<i class="bi bi-camera-fill me-2"></i>BẬT CAMERA QUÉT';
+            });
+        }
+    }
+}
 
+// 2. START CAMERA + GIỮ QR CŨ
+document.addEventListener('DOMContentLoaded', () => {
+    window.scanner = new QrScanner();
+    
+    // Close QR (từ script cũ)
+    document.querySelectorAll('#btn-close-overlay, #btn-close-overlay-large').forEach(btn => {
+        btn.onclick = () => {
+            document.getElementById('qrOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        };
+    });
+});
+</script> -->
+<script type="module">
+    // 1. IMPORT teacherService
+    import { teacherService } from './services/teacherService.js';
+    window.teacherService = teacherService;
+    
+    // 2. HELPER showScanResult
+    window.showScanResult = function(message, type = 'info') {
+        const resultEl = document.getElementById('scan-result');
+        resultEl.innerHTML = message;
+        resultEl.className = `text-center p-3 bg-${type === 'success' ? 'success' : 'danger'} text-white fw-bold rounded-3 mb-2`;
+        setTimeout(() => {
+            resultEl.innerHTML = '';
+            resultEl.className = 'text-center p-2 rounded-3 mb-2';
+        }, 4000);
+    };
+    
+    // 3. TẠO QR TEST (cập nhật)
+    document.getElementById('btn-open-session').onclick = function() {
+        const classId = document.getElementById('class-id').value || 1;
+        document.getElementById('class-id').value = classId; // Auto fill
+        
+        // Show QR
+        document.getElementById('qrOverlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        // QR test sinh viên
+        const qrcode = document.getElementById('qrcode');
+        qrcode.innerHTML = '';
+        new QRCode(qrcode, {
+            text: JSON.stringify({
+                type: "student",
+                student_code: "DH52201279",
+                name: "Phạm Uyên Phương"
+            }),
+            width: 220,
+            colorDark: "#157347"
+        });
+        
+        document.getElementById('overlay-class-info').textContent = `Class ID: ${classId}`;
+        document.getElementById('display-expiry').textContent = '15 phút';
+        
+        console.log('✅ QR ready! Class ID:', classId);
+        showScanResult('✅ Tạo QR OK! Nhập Class ID = 1 → Bật camera quét!', 'success');
+    };
+</script>
+
+<script>
+// 4. CAMERA SCANNER HOÀN CHỈNH
+class QrScanner {
+    constructor() {
+        this.scanner = null;
+        this.init();
+    }
+    
+    init() {
+        document.getElementById('btn-toggle-camera').onclick = () => this.toggleCamera();
+    }
+    
+    async toggleCamera() {
+        if (this.scanner && this.scanner.isScanning) {
+            this.stopCamera();
+            return;
+        }
+        
+        try {
+            console.log('🔄 Bật camera...');
+            this.scanner = new Html5Qrcode("reader");
+            
+            await this.scanner.start(
+                { facingMode: "environment" }, // Camera sau
+                { 
+                    fps: 10, 
+                    qrbox: { width: 250, height: 250 },
+                    aspectRatio: 1.0 
+                },
+                (result) => this.onScan(result),
+                (error) => console.log('No QR', error)
+            );
+            
+            // UI Success
+            document.getElementById('camera-status').outerHTML = 
+                '<span id="camera-status" class="badge bg-success rounded-pill">✅ Đang quét...</span>';
+            document.getElementById('btn-toggle-camera').innerHTML = 
+                '<i class="bi bi-camera-video-off me-2"></i>TẮT CAMERA';
+            showScanResult('✅ Camera OK! Quét QR sinh viên!', 'success');
+            
+        } catch (err) {
+            console.error('Camera error:', err);
+            showScanResult('❌ Camera lỗi: ' + err, 'danger');
+        }
+    }
+    
+    onScan(result) {
+        console.log('📱 QR OK:', result);
+        
+        try {
+            const qrData = JSON.parse(result);
+            const sessionId = parseInt(document.getElementById('class-id').value);
+            
+            if (!sessionId || isNaN(sessionId)) {
+                showScanResult('❌ NHẬP SESSION ID = 1 TRƯỚC!', 'danger');
+                return;
+            }
+            
+            console.log('📤 Scan:', { session_id: sessionId, student_code: qrData.student_code });
+            
+            // ✅ GỌI API
+            teacherService.scanStudent(sessionId, qrData.student_code)
+                .then(data => {
+                    console.log('✅ API:', data);
+                    showScanResult(
+                        `✅ ${data.message}<br><small>${qrData.name}</small>`, 
+                        'success'
+                    );
+                })
+                .catch(error => {
+                    console.error('❌ API:', error.response?.data || error.message);
+                    showScanResult(`❌ ${error.message}`, 'danger');
+                });
+                
+        } catch (e) {
+            console.error('Parse error:', e);
+            showScanResult('❌ QR không đúng định dạng!', 'danger');
+        }
+    }
+    
+    stopCamera() {
+        if (this.scanner) {
+            this.scanner.stop().then(() => {
+                this.scanner.clear();
+                document.getElementById('camera-status').outerHTML = 
+                    '<span id="camera-status" class="badge bg-secondary rounded-pill">Chưa bật</span>';
+                document.getElementById('btn-toggle-camera').innerHTML = 
+                    '<i class="bi bi-camera-fill me-2"></i>BẬT CAMERA QUÉT';
+                showScanResult('', 'info');
+            });
+        }
+    }
+}
+
+// 5. INIT
+document.addEventListener('DOMContentLoaded', () => {
+    window.scanner = new QrScanner();
+    
+    // Close QR
+    document.querySelectorAll('#btn-close-overlay, #btn-close-overlay-large').forEach(btn => {
+        btn.onclick = () => {
+            document.getElementById('qrOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        };
+    });
+    
+    // Default
+    document.getElementById('class-id').value = 1; // Auto fill
+    document.getElementById('scan-result').textContent = 'Nhập Session ID → Tạo QR → Bật camera';
+});
+</script>
 </body>
 </html>
